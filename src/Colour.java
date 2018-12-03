@@ -1,16 +1,23 @@
 public enum Colour {
-    BLACK("Black"),
-    WHITE("White"),
-    NONE("None");
+  BLACK("B"),
+  WHITE("W"),
+  NONE(".");
 
-    private final String colourRep;
+  private final String colourRep;
 
-    private Colour(String colourRep) {
-      this.colourRep = colourRep;
+  private Colour(String colourRep) {
+    this.colourRep = colourRep;
+  }
+
+  public String colourRep() {
+    return this.colourRep;
+  }
+
+  public Colour opponentColour() {
+    switch (this) {
+      case BLACK : return Colour.WHITE;
+      case WHITE : return Colour.BLACK;
+      default    : return Colour.NONE;
     }
-
-    public String colourRep() {
-        return this.colourRep;
-    }
-
+  }
 }

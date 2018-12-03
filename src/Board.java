@@ -35,14 +35,59 @@ public class Board {
   }
 
   public Square getSquare(int x, int y) {
-      return gameBoard[x][y];
+    return gameBoard[x][y];
   }
+
   public void applyMove(Move move) {
-      Square fSquare = move.getFrom();
-      Square tSquare = move.getTo();
-      if (! move.isCapture()) {
-        gameBoard[tSquare.getX()][tSquare.getY()].setOccupier(fSquare.occupiedBy());
-        gameBoard[fSquare.getX()][fSquare.getY()].setOccupier(Colour.NONE);
+    Square fSquare = move.getFrom();
+    Square tSquare = move.getTo();
+    gameBoard[tSquare.getX()][tSquare.getY()].setOccupier(fSquare.occupiedBy());
+    gameBoard[fSquare.getX()][fSquare.getY()].setOccupier(Colour.NONE);
+    if (move.isEnPassantCapture()) {
+      if (tSquare.occupiedBy() == Colour.WHITE) {
+        gameBoard[tSquare.getX()][tSquare.getY()-1].setOccupier(Colour.NONE);
       }
+      else {
+        gameBoard[tSquare.getX()][tSquare.getY()+1].setOccupier(Colour.NONE);
+      }
+    }
+  }
+
+  public void unapplyMove(Move move) {
+    Square fSquare = move.getFrom();
+    Square tSquare = move.getTo();
+    gameBoard[fSquare.getX()][fSquare.getY()].setOccupier(tSquare.occupiedBy());
+    if (! move.isCapture()) {
+      gameBoard[tSquare.getX()][tSquare.getY()].setOccupier(Colour.NONE);
+    }
+    else if (! move.isEnPassantCapture()) {
+      gameBoard[tSquare.getX()][tSquare.getY()].setOccupier(fSquare.occupiedBy().opponentColour());
+    }
+    else {
+      gameBoard[tSquare.getX()][tSquare.getY()].setOccupier(Colour.NONE);
+      if (fSquare.occupiedBy() == Colour.WHITE) {
+        gameBoard[tSquare.getX()][tSquare.getY()-1].setOccupier(Colour.BLACK);
+      }
+      else {
+        gameBoard[tSquare.getX()][tSquare.getY()+1].setOccupier(Colour.WHITE);
+      }
+    }    
+  }
+
+  public void display() {
+    System.out.print(genDisplayString());
+  }
+
+  public String genDisplayString() {
+    String displayString = "  A B C D E F G H\n";
+    for (int y = 7; y >= 0; y--) {
+      displayString += (y+1);
+      for (int x = 0; x < 8; x++) {
+        displayString += " " + gameBoard[x][y].occupiedBy().colourRep();
+      }
+      displayString += " " + (y+1) + "\n";
+    }
+    displayString += "  A B C D E F G H";
+    return displayString;
   }
 }
