@@ -1,15 +1,15 @@
 public enum Colour {
-  BLACK("B"),
-  WHITE("W"),
-  NONE(".");
+  BLACK('B'), //(char)(9823)
+  WHITE('W'), //(char)(9817)
+  NONE('.');
 
-  private final String colourRep;
+  private final char colourRep;
 
-  private Colour(String colourRep) {
+  private Colour(char colourRep) {
     this.colourRep = colourRep;
   }
 
-  public String colourRep() {
+  public char colourRep() {
     return this.colourRep;
   }
 

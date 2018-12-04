@@ -1,4 +1,3 @@
-import java.util.random;
 
 public class Player {
   
@@ -9,10 +8,10 @@ public class Player {
   private Player opponent;
 
   public Player(Game game, Board board, Colour colour, boolean isComputerPlayer) {
-      this.game = game;
-      this.board = board;
-      this.colour = colour;
-      this.isComputerPlayer = isComputerPlayer;
+    this.game = game;
+    this.board = board;
+    this.colour = colour;
+    this.isComputerPlayer = isComputerPlayer;
   }
 
   public void setOpponent(Player opponent) {

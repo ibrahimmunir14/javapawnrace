@@ -327,4 +327,51 @@ public class PawnRaceTest {
                 + "  A B C D E F G H"
                 , board.genDisplayString());
   }
+
+  @Test
+  public void GameTest() {
+    Board board = new Board('e', 'c');
+    Game game = new Game(board);
+    assertEquals("Game: set up not successful.", Colour.WHITE, game.getCurrentPlayer());
+    assertEquals("Game: set up not successful.", null, game.getLastMove());
+    Square sf1 = board.getSquare(2, 1);
+    Square st1 = board.getSquare(2, 3);
+    Move m1 = new Move(sf1, st1, false, false);
+    game.applyMove(m1);
+    assertEquals("Game: get last move after white opens unsuccessful.", m1, game.getLastMove());
+    assertEquals("Game: apply white opening move unsuccessful.", Colour.BLACK, game.getCurrentPlayer());
+    Square sf2 = board.getSquare(5, 6);
+    Square st2 = board.getSquare(5, 4);
+    Move m2 = new Move(sf2, st2, false, false);
+    game.applyMove(m2);
+    assertEquals("Game: get last move unsuccessful.", m2, game.getLastMove());
+    assertEquals("Game: apply move unsuccessful.", Colour.WHITE, game.getCurrentPlayer());
+    Square sf3 = board.getSquare(2, 3);
+    Square st3 = board.getSquare(2, 4);
+    Move m3 = new Move(sf3, st3, false, false);
+    game.applyMove(m3);
+    assertEquals("Game: get last move unsuccessful.", m3, game.getLastMove());
+    assertEquals("Game: apply move unsuccessful.", Colour.BLACK, game.getCurrentPlayer());
+    game.unapplyMove();
+    assertEquals("Game: unapply move unsuccessful.", m2, game.getLastMove());
+    assertEquals("Game: unapply move unsuccessful.", Colour.WHITE, game.getCurrentPlayer());
+    game.unapplyMove();
+    assertEquals("Game: unapply move unsuccessful.", m1, game.getLastMove());
+    assertEquals("Game: unapply move unsuccessful.", Colour.BLACK, game.getCurrentPlayer());
+    game.unapplyMove();
+    assertEquals("Game: unapply move unsuccessful.", null, game.getLastMove());
+    assertEquals("Game: unapply move unsuccessful.", Colour.WHITE, game.getCurrentPlayer());
+    game.unapplyMove();
+    assertEquals("Game: unapply move at starting position unsuccessful.", null, game.getLastMove());
+    assertEquals("Game: unapply move at starting position unsuccessful.", Colour.WHITE, game.getCurrentPlayer());
+
+    assertEquals("Game: Parse Move 1 unsuccessful.", 1, game.parseMove("b3").getFrom().getX());
+    assertEquals("Game: Parse Move 1 unsuccessful.", 1, game.parseMove("b3").getFrom().getY());
+    assertEquals("Game: Parse Move 1 unsuccessful.", 1, game.parseMove("b3").getTo().getX());
+    assertEquals("Game: Parse Move 1 unsuccessful.", 2, game.parseMove("b3").getTo().getY());
+    assertEquals("Game: Parse Move 2 unsuccessful.", 7, game.parseMove("h4").getFrom().getX());
+    assertEquals("Game: Parse Move 2 unsuccessful.", 1, game.parseMove("h4").getFrom().getY());
+    assertEquals("Game: Parse Move 2 unsuccessful.", 7, game.parseMove("h4").getTo().getX());
+    assertEquals("Game: Parse Move 2 unsuccessful.", 3, game.parseMove("h4").getTo().getY());
+  }
 }
