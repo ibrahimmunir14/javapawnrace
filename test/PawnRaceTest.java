@@ -474,6 +474,92 @@ public class PawnRaceTest {
     */
   }
 
+  @Test
+  public void PlayerSetUpTest() {
+    Board b = new Board('e', 'c');
+    Game g = new Game(b);
+    Player p = new Player(g, b, Colour.WHITE, true);
+    assertEquals("Player: SetUp colour not working correctly.", Colour.WHITE, p.getColour());
+    assertEquals("Player: SetUp isPcPlayer not working correctly.", true, p.isComputerPlayer());
+  }
+
+  @Test
+  public void PlayerGetAllPawnsTest() {
+    Board b = new Board('e', 'c');
+    Game g = new Game(b);
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . b b b b b  7
+        5 6  . . . . . . . .  6
+        4 5  . . . . . . . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w w w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */
+    Player p = new Player(g, b, Colour.WHITE, false);
+    assertEquals("Player: getAllPawns at White Starting Position not working."
+                , new Square[] { b.getSquare(0, 1), b.getSquare(1, 1), b.getSquare(2, 1)
+                               , b.getSquare(3, 1), b.getSquare(5, 1), b.getSquare(6, 1), b.getSquare(7, 1)}
+                , p.getAllPawns());
+    Player q = new Player(g, b, Colour.BLACK, false);
+    assertEquals("Player: getAllPawns at Black Starting Position not working."
+                , new Square[] { b.getSquare(0, 6), b.getSquare(1, 6), b.getSquare(3, 6)
+                               , b.getSquare(4, 6), b.getSquare(5, 6), b.getSquare(6, 6), b.getSquare(7, 6)}
+                , q.getAllPawns());
+    g.applyMove(g.parseMove("c4"));
+    g.applyMove(g.parseMove("f5"));
+    g.applyMove(g.parseMove("c5"));
+    g.applyMove(g.parseMove("d5"));
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . . b . b b  7
+        5 6  . . . . . . . .  6
+        4 5  . . w b . b . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w . w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */
+    assertEquals("Player: getAllPawns not working."
+                , new Square[] { b.getSquare(0, 1), b.getSquare(1, 1), b.getSquare(2, 4)
+                               , b.getSquare(3, 1), b.getSquare(5, 1), b.getSquare(6, 1), b.getSquare(7, 1)}
+                , p.getAllPawns());
+    assertEquals("Player: getAllPawns not working."
+                , new Square[] { b.getSquare(0, 6), b.getSquare(1, 6), b.getSquare(3, 4)
+                               , b.getSquare(4, 6), b.getSquare(5, 4), b.getSquare(6, 6), b.getSquare(7, 6)}
+                , q.getAllPawns());
+    g.applyMove(g.parseMove("cxd6"));
+    g.applyMove(g.parseMove("exd6"));
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . . . . b b  7
+        5 6  . . . b . . . .  6
+        4 5  . . . . . b . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w . w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */
+    assertEquals("Player: getAllPawns after capture not working."
+                , new Square[] { b.getSquare(0, 1), b.getSquare(1, 1), b.getSquare(3, 1)
+                               , b.getSquare(5, 1), b.getSquare(6, 1), b.getSquare(7, 1)}
+                , p.getAllPawns());
+    assertEquals("Player: getAllPawns after capture not working."
+                , new Square[] { b.getSquare(0, 6), b.getSquare(1, 6), b.getSquare(3, 5)
+                               , b.getSquare(5, 4), b.getSquare(6, 6), b.getSquare(7, 6)}
+                , q.getAllPawns());
+    
+  }
+
+
+
   private void compareMovesEqual(String msg, Move m1, Move m2) {
     if (m1 == null || m2 == null) {
       assertTrue(msg + " has a null move.", false);
