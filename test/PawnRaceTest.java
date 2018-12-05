@@ -187,7 +187,7 @@ public class PawnRaceTest {
     assertEquals("Board: applyMove black3 Capture not successful.", Colour.NONE, board.getSquare(4, 6).occupiedBy());
     /*       A B C D E F G H
         7 8  . . . . . . . .  8
-        6 7  b b . . w . b b  7
+        6 7  b b . . . . b b  7
         5 6  . . . b . . . .  6
         4 5  . . . . . b . .  5
         3 4  . . . . . . . .  4
@@ -368,49 +368,123 @@ public class PawnRaceTest {
   }
 
   @Test
-  public void GameTest() {
+  public void GameApplyUnapplyTest() {
     Board board = new Board('e', 'c');
     Game game = new Game(board);
     assertEquals("Game: set up not successful.", Colour.WHITE, game.getCurrentPlayer());
     assertEquals("Game: set up not successful.", null, game.getLastMove());
-    Square sf1 = board.getSquare(2, 1);
-    Square st1 = board.getSquare(2, 3);
-    Move m1 = new Move(sf1, st1, false, false);
-    game.applyMove(m1);
-    assertEquals("Game: get last move after white opens unsuccessful.", m1, game.getLastMove());
-    assertEquals("Game: apply white opening move unsuccessful.", Colour.BLACK, game.getCurrentPlayer());
-    Square sf2 = board.getSquare(5, 6);
-    Square st2 = board.getSquare(5, 4);
-    Move m2 = new Move(sf2, st2, false, false);
-    game.applyMove(m2);
-    assertEquals("Game: get last move unsuccessful.", m2, game.getLastMove());
-    assertEquals("Game: apply move unsuccessful.", Colour.WHITE, game.getCurrentPlayer());
-    Square sf3 = board.getSquare(2, 3);
-    Square st3 = board.getSquare(2, 4);
-    Move m3 = new Move(sf3, st3, false, false);
-    game.applyMove(m3);
-    assertEquals("Game: get last move unsuccessful.", m3, game.getLastMove());
-    assertEquals("Game: apply move unsuccessful.", Colour.BLACK, game.getCurrentPlayer());
-    game.unapplyMove();
-    assertEquals("Game: unapply move unsuccessful.", m2, game.getLastMove());
-    assertEquals("Game: unapply move unsuccessful.", Colour.WHITE, game.getCurrentPlayer());
-    game.unapplyMove();
-    assertEquals("Game: unapply move unsuccessful.", m1, game.getLastMove());
-    assertEquals("Game: unapply move unsuccessful.", Colour.BLACK, game.getCurrentPlayer());
-    game.unapplyMove();
-    assertEquals("Game: unapply move unsuccessful.", null, game.getLastMove());
-    assertEquals("Game: unapply move unsuccessful.", Colour.WHITE, game.getCurrentPlayer());
-    game.unapplyMove();
-    assertEquals("Game: unapply move at starting position unsuccessful.", null, game.getLastMove());
-    assertEquals("Game: unapply move at starting position unsuccessful.", Colour.WHITE, game.getCurrentPlayer());
 
-    assertEquals("Game: Parse Move 1 unsuccessful.", 1, game.parseMove("b3").getFrom().getX());
-    assertEquals("Game: Parse Move 1 unsuccessful.", 1, game.parseMove("b3").getFrom().getY());
-    assertEquals("Game: Parse Move 1 unsuccessful.", 1, game.parseMove("b3").getTo().getX());
-    assertEquals("Game: Parse Move 1 unsuccessful.", 2, game.parseMove("b3").getTo().getY());
-    assertEquals("Game: Parse Move 2 unsuccessful.", 7, game.parseMove("h4").getFrom().getX());
-    assertEquals("Game: Parse Move 2 unsuccessful.", 1, game.parseMove("h4").getFrom().getY());
-    assertEquals("Game: Parse Move 2 unsuccessful.", 7, game.parseMove("h4").getTo().getX());
-    assertEquals("Game: Parse Move 2 unsuccessful.", 3, game.parseMove("h4").getTo().getY());
+    Square sfw1 = board.getSquare(2, 1);
+    Square stw1 = board.getSquare(2, 3);
+    Move mw1 = new Move(sfw1, stw1, false, false);
+    game.applyMove(mw1);
+    assertEquals("Game: player turn switching not working.", Colour.BLACK, game.getCurrentPlayer());
+    Square sfb1 = board.getSquare(5, 6);
+    Square stb1 = board.getSquare(5, 4);
+    Move mb1 = new Move(sfb1, stb1, false, false);
+    game.applyMove(mb1);
+    compareMovesEqual("Game: getLastMove mb1", mb1, game.getLastMove());
+    assertEquals("Game: player turn switching not working.", Colour.WHITE, game.getCurrentPlayer());
+    Square sfw2 = board.getSquare(2, 3);
+    Square stw2 = board.getSquare(2, 4);
+    Move mw2 = new Move(sfw2, stw2, false, false);
+    game.applyMove(mw2);
+    compareMovesEqual("Game: getLastMove mw2", mw2, game.getLastMove());
+    assertEquals("Game: player turn switching not working.", Colour.BLACK, game.getCurrentPlayer());
+
+    game.unapplyMove();
+    compareMovesEqual("Game: unapplyMove mw2", mb1, game.getLastMove());
+    assertEquals("Game: player turn switching after unapply not working.", Colour.WHITE, game.getCurrentPlayer());
+    game.unapplyMove();
+    compareMovesEqual("Game: unapplyMove mb1", mw1, game.getLastMove());
+    assertEquals("Game: player turn switching after unapply not working.", Colour.BLACK, game.getCurrentPlayer());
+    game.unapplyMove();
+    assertEquals("Game: unapplyMove mw1 not working.", null, game.getLastMove());
+    assertEquals("Game: player turn switching after unapply not working.", Colour.WHITE, game.getCurrentPlayer());
+    game.unapplyMove();
+    assertEquals("Game: unapplyMove at starting position not working.", null, game.getLastMove());
+    assertEquals("Game: unapplyMove at starting position not working.", Colour.WHITE, game.getCurrentPlayer());
+  }
+
+  @Test
+  public void GameParseMoveTest() {
+    Board board = new Board('e', 'c');
+    Game game = new Game(board);
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . b b b b b  7
+        5 6  . . . . . . . .  6
+        4 5  . . . . . . . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w w w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */
+    compareMovesEqual("Game: parseMove standard-white-one", new Move(new Square(1, 1), new Square(1, 2), false, false), game.parseMove("b3"));
+    compareMovesEqual("Game: parseMove standard-white-two", new Move(new Square(7, 1), new Square(7, 3), false, false), game.parseMove("h4"));
+    game.applyMove(game.parseMove("c4"));
+    compareMovesEqual("Game: parseMove standard-black-one", new Move(new Square(7, 6), new Square(7, 5), false, false), game.parseMove("h6"));
+    compareMovesEqual("Game: parseMove standard-black-two", new Move(new Square(3, 6), new Square(3, 4), false, false), game.parseMove("d5"));
+    game.applyMove(game.parseMove("f5"));
+    game.applyMove(game.parseMove("c5"));
+    game.applyMove(game.parseMove("d5"));
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . . b . b b  7
+        5 6  . . . . . . . .  6
+        4 5  . . w b . b . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w . w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */
+    // We are now ready for an EnPassant Capture
+    compareMovesEqual("Game: parseMove enpassant-white-x-black", new Move(new Square(2, 4), new Square(3, 5), true, true), game.parseMove("cxd6"));
+    game.applyMove(game.parseMove("cxd6"));
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . . b . b b  7
+        5 6  . . . w . . . .  6
+        4 5  . . . . . b . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w . w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */
+    // We are now ready for a regular capture
+    compareMovesEqual("Game: parseMove capture-black-x-white", new Move(new Square(4, 6), new Square(3, 5), true, false), game.parseMove("exd6"));
+    game.applyMove(game.parseMove("exd6"));
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . . . . b b  7
+        5 6  . . . b . . . .  6
+        4 5  . . . . . b . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w . w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */
+  }
+
+  private void compareMovesEqual(String msg, Move m1, Move m2) {
+    if (m1 == null || m2 == null) {
+      assertTrue(msg + " has a null move.", false);
+    }
+    else {
+      assertEquals(msg + " fromX not matching.", m1.getFrom().getX(), m2.getFrom().getX());
+      assertEquals(msg + " fromY not matching.", m1.getFrom().getY(), m2.getFrom().getY());
+      assertEquals(msg + " toX not matching.", m1.getTo().getX(), m2.getTo().getX());
+      assertEquals(msg + " toY not matching.", m1.getTo().getY(), m2.getTo().getY());
+      assertEquals(msg + " isCapture not matching", m1.isCapture(), m2.isCapture());
+      assertEquals(msg + " isEnPassant not matching", m1.isEnPassantCapture(), m2.isEnPassantCapture());
+    }
   }
 }
