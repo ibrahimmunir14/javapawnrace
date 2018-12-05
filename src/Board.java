@@ -38,39 +38,45 @@ public class Board {
   }
 
   public void applyMove(Move move) {
-    Square fSquare = move.getFrom();
-    Square tSquare = move.getTo();
-    gameBoard[tSquare.getX()][tSquare.getY()].setOccupier(fSquare.occupiedBy());
-    gameBoard[fSquare.getX()][fSquare.getY()].setOccupier(Colour.NONE);
+    int fromX = move.getFrom().getX();
+    int fromY = move.getFrom().getY();
+    int toX = move.getTo().getX();
+    int toY = move.getTo().getY();
+    Colour movingColour = gameBoard[fromX][fromY].occupiedBy();
+    gameBoard[toX][toY].setOccupier(movingColour);
+    gameBoard[fromX][fromY].setOccupier(Colour.NONE);
     if (move.isEnPassantCapture()) {
-      if (tSquare.occupiedBy() == Colour.WHITE) {
-        gameBoard[tSquare.getX()][tSquare.getY()-1].setOccupier(Colour.NONE);
+      if (movingColour == Colour.WHITE) {
+        gameBoard[toX][toY-1].setOccupier(Colour.NONE);
       }
       else {
-        gameBoard[tSquare.getX()][tSquare.getY()+1].setOccupier(Colour.NONE);
+        gameBoard[toX][toY+1].setOccupier(Colour.NONE);
       }
     }
   }
 
   public void unapplyMove(Move move) {
-    Square fSquare = move.getFrom();
-    Square tSquare = move.getTo();
-    gameBoard[fSquare.getX()][fSquare.getY()].setOccupier(tSquare.occupiedBy());
+    int fromX = move.getFrom().getX();
+    int fromY = move.getFrom().getY();
+    int toX = move.getTo().getX();
+    int toY = move.getTo().getY();
+    Colour movedColour = gameBoard[toX][toY].occupiedBy();
+    gameBoard[fromX][fromY].setOccupier(movedColour);
     if (! move.isCapture()) {
-      gameBoard[tSquare.getX()][tSquare.getY()].setOccupier(Colour.NONE);
+      gameBoard[toX][toY].setOccupier(Colour.NONE);
     }
     else if (! move.isEnPassantCapture()) {
-      gameBoard[tSquare.getX()][tSquare.getY()].setOccupier(fSquare.occupiedBy().opponentColour());
+      gameBoard[toX][toY].setOccupier(movedColour.opponentColour());
     }
     else {
-      gameBoard[tSquare.getX()][tSquare.getY()].setOccupier(Colour.NONE);
-      if (fSquare.occupiedBy() == Colour.WHITE) {
-        gameBoard[tSquare.getX()][tSquare.getY()-1].setOccupier(Colour.BLACK);
+      gameBoard[toX][toY].setOccupier(Colour.NONE);
+      if (movedColour == Colour.WHITE) {
+        gameBoard[toX][toY-1].setOccupier(Colour.BLACK);
       }
       else {
-        gameBoard[tSquare.getX()][tSquare.getY()+1].setOccupier(Colour.WHITE);
+        gameBoard[toX][toY+1].setOccupier(Colour.WHITE);
       }
-    }    
+    }
   }
 
   public void display() {
