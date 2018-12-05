@@ -23,19 +23,33 @@ public class Player {
   }
 
   public boolean isComputerPlayer() {
-      return isComputerPlayer;
+    return isComputerPlayer;
   }
 
   public Square[] getAllPawns() {
-      return null;
+    Square[] allPawns = new Square[7];
+    int index = 0;
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 8; j++) {
+        if (board.getSquare(i, j).occupiedBy() == colour) {
+          allPawns[index] = board.getSquare(i, j);
+          index += 1;
+        }
+      }
+    }
+    Square[] allPawns2 = new Square[index];
+    for (int i = 0; i < index; i++) {
+      allPawns2[i] = allPawns[i];
+    }
+    return allPawns2;
   }
 
   public Move[] getAllValidMoves() {
-      return null;
+    return null;
   }
 
   public boolean isPassedPawn(Square square) {
-      return false;
+    return false;
   }
 
   public void makeMove() {
