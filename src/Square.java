@@ -24,10 +24,12 @@ public class Square {
         this.occupier = colour;
     }
 
-    public char getColSAN() {
-      return (char)('a' + x);
+    public char getCol() {
+      return Util.XtoCol(x);
     }
-    public int getRowSAN() {
-      return y + 1;
+
+    public int getRow() {
+      return Util.YtoRow(y);
     }
+
 }

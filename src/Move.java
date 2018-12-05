@@ -29,10 +29,10 @@ public class Move {
 
   public String getSAN() {
     if (!isCapture()) {
-        return to.getColSAN() + "" + to.getRowSAN();
+        return to.getCol() + "" + to.getRow();
     }
     else {
-        return from.getColSAN() + "x" + to.getColSAN() + "" + to.getRowSAN();
+        return from.getCol() + "x" + to.getCol() + "" + to.getRow();
     }
   }
 }
