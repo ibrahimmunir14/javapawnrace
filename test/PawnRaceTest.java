@@ -8,15 +8,41 @@ import static org.junit.Assert.*;
 public class PawnRaceTest {
 
   @Test
+  public void UtilTest() {
+    assertEquals("Util: XtoCol not working correctly.", 'a', Util.XtoCol(0));
+    assertEquals("Util: XtoCol not working correctly.", 'd', Util.XtoCol(3));
+    assertEquals("Util: XtoCol not working correctly.", 'h', Util.XtoCol(7));
+    assertEquals("Util: ColtoX not working correctly.", 0, Util.ColtoX('a'));
+    assertEquals("Util: ColtoX not working correctly.", 3, Util.ColtoX('d'));
+    assertEquals("Util: ColtoX not working correctly.", 7, Util.ColtoX('h'));
+    assertEquals("Util: YtoRow not working correctly.", 1, Util.YtoRow(0));
+    assertEquals("Util: YtoRow not working correctly.", 4, Util.YtoRow(3));
+    assertEquals("Util: YtoRow not working correctly.", 8, Util.YtoRow(7));
+    assertEquals("Util: RowtoY not working correctly.", 0, Util.RowtoY(1));
+    assertEquals("Util: RowtoY not working correctly.", 3, Util.RowtoY(4));
+    assertEquals("Util: RowtoY not working correctly.", 7, Util.RowtoY(8));
+  }
+  @Test
+  public void ColourTest() {
+    Colour col = Colour.BLACK;
+    assertEquals("Colour: Colour Rep not set or get correctly.", 'B', col.colourRep());
+    assertEquals("Colour: Opponent Colour not set or get correctly.", Colour.WHITE, col.opponentColour());
+    Colour dot = Colour.NONE;
+    assertEquals("Colour: Colour Rep not set or get correctly.", '.', dot.colourRep());
+    assertEquals("Colour: Opponent Colour not set or get correctly.", Colour.NONE, dot.opponentColour());
+  }
+  
+  @Test
   public void SquareTest() {
     Square sq = new Square(4, 5);
     assertEquals("Square: x-coordinate set or get incorrectly.", 4, sq.getX());
     assertEquals("Square: y-coordinate set or get incorrectly.", 5, sq.getY());
-    assertEquals("Square: get san form of column unsuccessful.",  'e', sq.getColSAN());
-    assertEquals("Square: get san form of row unsuccessful.",  6, sq.getRowSAN());
+    assertEquals("Square: getCol unsuccessful.",  'e', sq.getCol());
+    assertEquals("Square: getRow unsuccessful.",  6, sq.getRow());
     assertEquals("Square: colour not defaulted to None.", Colour.NONE, sq.occupiedBy());
     sq.setOccupier(Colour.WHITE);
     assertEquals("Square: colour not set correctly.", Colour.WHITE, sq.occupiedBy());
+    
   }
   
   @Test
@@ -44,230 +70,243 @@ public class PawnRaceTest {
   @Test
   public void BoardSetUpTest() {
     Board board = new Board('e', 'c');
-    /*        A  B  C  D  E  F  G  H
-        7  8  .  .  .  .  .  .  .  .  8
-        6  7  b  b  .  b  b  b  b  b  7
-        5  6  .  .  .  .  .  .  .  .  6
-        4  5  .  .  .  .  .  .  .  .  5
-        3  4  .  .  .  .  .  .  .  .  4
-        2  3  .  .  .  .  .  .  .  .  3
-        1  2  w  w  w  w  .  w  w  w  2
-        0  1  .  .  .  .  .  .  .  .  1
-              A  B  C  D  E  F  G  H
-              0  1  2  3  4  5  6  7
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . b b b b b  7
+        5 6  . . . . . . . .  6
+        4 5  . . . . . . . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w w w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
     */
-    assertEquals("Board: empty squares not set properly.", Colour.NONE, board.getSquare(0, 0).occupiedBy());
-    assertEquals("Board: empty squares not set properly.", Colour.NONE, board.getSquare(3, 4).occupiedBy());
-    assertEquals("Board: empty squares not set properly.", Colour.NONE, board.getSquare(7, 7).occupiedBy());
-    assertEquals("Board: black starting square not set properly.", Colour.BLACK, board.getSquare(0, 6).occupiedBy());
-    assertEquals("Board: black starting square not set properly.", Colour.BLACK, board.getSquare(4, 6).occupiedBy());
-    assertEquals("Board: black starting square not set properly.", Colour.BLACK, board.getSquare(7, 6).occupiedBy());
-    assertEquals("Board: black empty square not set properly.", Colour.NONE, board.getSquare(2, 6).occupiedBy());
-    assertEquals("Board: white starting square not set properly.", Colour.WHITE, board.getSquare(0, 1).occupiedBy());
-    assertEquals("Board: white starting square not set properly.", Colour.WHITE, board.getSquare(2, 1).occupiedBy());
-    assertEquals("Board: white starting square not set properly.", Colour.WHITE, board.getSquare(7, 1).occupiedBy());
     assertEquals("Board: white empty square not set properly.", Colour.NONE, board.getSquare(4, 1).occupiedBy());
+    assertEquals("Board: white empty square not set properly.", Colour.NONE, board.getSquare(2, 6).occupiedBy());
+    for (int i = 0; i < 8; i++) {
+      assertEquals("Board: empty squares not set properly.", Colour.NONE, board.getSquare(i, 0).occupiedBy());
+      assertEquals("Board: empty squares not set properly.", Colour.NONE, board.getSquare(i, 2).occupiedBy());
+      assertEquals("Board: empty squares not set properly.", Colour.NONE, board.getSquare(i, 3).occupiedBy());
+      assertEquals("Board: empty squares not set properly.", Colour.NONE, board.getSquare(i, 4).occupiedBy());
+      assertEquals("Board: empty squares not set properly.", Colour.NONE, board.getSquare(i, 5).occupiedBy());
+      assertEquals("Board: empty squares not set properly.", Colour.NONE, board.getSquare(i, 7).occupiedBy());
+      if (i != 4) {
+        assertEquals("Board: white starting square not set properly.", Colour.WHITE, board.getSquare(i, 1).occupiedBy());
+      }
+      if (i != 2) {
+        assertEquals("Board: black starting square not set properly.", Colour.BLACK, board.getSquare(i, 6).occupiedBy());
+      }
+    }    
   }
 
   @Test
   public void BoardApplyMoveTest() {
+    // Test two standard moves, an EnPassant capture, and a standard capture
     Board board = new Board('e', 'c');
-    /*        A  B  C  D  E  F  G  H
-        7  8  .  .  .  .  .  .  .  .  8
-        6  7  b  b  .  b  b  b  b  b  7
-        5  6  .  .  .  .  .  .  .  .  6
-        4  5  .  .  .  .  .  .  .  .  5
-        3  4  .  .  .  .  .  .  .  .  4
-        2  3  .  .  .  .  .  .  .  .  3
-        1  2  w  w  w  w  .  w  w  w  2
-        0  1  .  .  .  .  .  .  .  .  1
-              A  B  C  D  E  F  G  H
-              0  1  2  3  4  5  6  7
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . b b b b b  7
+        5 6  . . . . . . . .  6
+        4 5  . . . . . . . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w w w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
     */
-    Square sf = board.getSquare(2, 1);
-    Square st = board.getSquare(2, 3);
-    Move m = new Move(sf, st, false, false);
-    board.applyMove(m);
-    assertEquals("Board: apply white opening move not successful.", Colour.WHITE, board.getSquare(2, 3).occupiedBy());
-    assertEquals("Board: apply white opening move not successful.", Colour.NONE, board.getSquare(2, 1).occupiedBy());
-    sf = board.getSquare(5, 6);
-    st = board.getSquare(5, 4);
-    m = new Move(sf, st, false, false);
-    board.applyMove(m);
-    assertEquals("Board: apply black opening move not successful.", Colour.BLACK, board.getSquare(5, 4).occupiedBy());
-    assertEquals("Board: apply black opening move not successful.", Colour.NONE, board.getSquare(5, 6).occupiedBy());
-    /*        A  B  C  D  E  F  G  H
-        7  8  .  .  .  .  .  .  .  .  8
-        6  7  b  b  .  b  b  -  b  b  7
-        5  6  .  .  .  .  .  .  .  .  6
-        4  5  .  .  .  .  .  b'  .  .  5
-        3  4  .  .  w' .  .  .  .  .  4
-        2  3  .  .  .  .  .  .  .  .  3
-        1  2  w  w  -  w  .  w  w  w  2
-        0  1  .  .  .  .  .  .  .  .  1
-              A  B  C  D  E  F  G  H
-              0  1  2  3  4  5  6  7
+    Square sfw1 = board.getSquare(2, 1);
+    Square stw1 = board.getSquare(2, 3);
+    Move mw1 = new Move(sfw1, stw1, false, false);
+    board.applyMove(mw1);
+    Square sfb1 = board.getSquare(5, 6);
+    Square stb1 = board.getSquare(5, 4);
+    Move mb1 = new Move(sfb1, stb1, false, false);
+    board.applyMove(mb1);
+    assertEquals("Board: applyMove white1 not successful.", Colour.WHITE, board.getSquare(2, 3).occupiedBy());
+    assertEquals("Board: applyMove white1 not successful.", Colour.NONE, board.getSquare(2, 1).occupiedBy());
+    assertEquals("Board: applyMove black1 not successful.", Colour.BLACK, board.getSquare(5, 4).occupiedBy());
+    assertEquals("Board: applyMove black1 not successful.", Colour.NONE, board.getSquare(5, 6).occupiedBy());
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . b b . b b  7
+        5 6  . . . . . . . .  6
+        4 5  . . . . . b . .  5
+        3 4  . . w . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w . w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
     */
-    sf = board.getSquare(2, 3);
-    st = board.getSquare(2, 4);
-    m = new Move(sf, st, false, false);
-    board.applyMove(m);
-    assertEquals("Board: apply white move not successful.", Colour.WHITE, board.getSquare(2, 4).occupiedBy());
-    assertEquals("Board: apply white move not successful.", Colour.NONE, board.getSquare(2, 3).occupiedBy());
-    sf = board.getSquare(3, 6);
-    st = board.getSquare(3, 4);
-    m = new Move(sf, st, false, false);
-    board.applyMove(m);
-    assertEquals("Board: apply black move not successful.", Colour.BLACK, board.getSquare(3, 4).occupiedBy());
-    assertEquals("Board: apply black move not successful.", Colour.NONE, board.getSquare(3, 6).occupiedBy());
-    /*        A  B  C  D  E  F  G  H
-        7  8  .  .  .  .  .  .  .  .  8
-        6  7  b  b  .  -  b  -  b  b  7
-        5  6  .  .  .  .  .  .  .  .  6
-        4  5  .  .  w' b' .  b' .  .  5
-        3  4  .  .  -  .  .  .  .  .  4
-        2  3  .  .  .  .  .  .  .  .  3
-        1  2  w  w  -  w  .  w  w  w  2
-        0  1  .  .  .  .  .  .  .  .  1
-              A  B  C  D  E  F  G  H
-              0  1  2  3  4  5  6  7
+    Square sfw2 = board.getSquare(2, 3);
+    Square stw2 = board.getSquare(2, 4);
+    Move mw2 = new Move(sfw2, stw2, false, false);
+    board.applyMove(mw2);
+    Square sfb2 = board.getSquare(3, 6);
+    Square stb2 = board.getSquare(3, 4);
+    Move mb2 = new Move(sfb2, stb2, false, false);
+    board.applyMove(mb2);
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . . b . b b  7
+        5 6  . . . . . . . .  6
+        4 5  . . w b . b . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w . w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
     */
-    sf = board.getSquare(2, 4);
-    st = board.getSquare(3, 5);
-    m = new Move(sf, st, true, true);
-    board.applyMove(m);
-    assertEquals("Board: apply enpassant move unsuccessful.", Colour.WHITE, board.getSquare(3, 5).occupiedBy());
-    assertEquals("Board: apply enpassant move unsuccessful.", Colour.NONE, board.getSquare(2, 4).occupiedBy());
-    assertEquals("Board: apply enpassant move unsuccessful.", Colour.NONE, board.getSquare(3, 4).occupiedBy());
-    /*        A  B  C  D  E  F  G  H
-        7  8  .  .  .  .  .  .  .  .  8
-        6  7  b  b  .  -  b  -  b  b  7
-        5  6  .  .  .  w' .  .  .  .  6
-        4  5  .  .  -  -  .  b'  .  .  5
-        3  4  .  .  -  .  .  .  .  .  4
-        2  3  .  .  .  .  .  .  .  .  3
-        1  2  w  w  -  w  .  w  w  w  2
-        0  1  .  .  .  .  .  .  .  .  1
-              A  B  C  D  E  F  G  H
-              0  1  2  3  4  5  6  7
+    Square sfw3 = board.getSquare(2, 4);
+    Square stw3 = board.getSquare(3, 5);
+    Move mw3 = new Move(sfw3, stw3, true, true);
+    board.applyMove(mw3);
+    assertEquals("Board: applyMove white3 EnPassant unsuccessful.", Colour.WHITE, board.getSquare(3, 5).occupiedBy());
+    assertEquals("Board: applyMove white3 EnPassant unsuccessful.", Colour.NONE, board.getSquare(2, 4).occupiedBy());
+    assertEquals("Board: applyMove white3 EnPassant unsuccessful.", Colour.NONE, board.getSquare(3, 4).occupiedBy());
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . . b . b b  7
+        5 6  . . . w . . . .  6
+        4 5  . . . . . b . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w . w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
     */
-    sf = board.getSquare(4, 6);
-    st = board.getSquare(3, 5);
-    m = new Move(sf, st, true, false);
-    board.applyMove(m);
-    assertEquals("Board: apply capture by black move not successful.", Colour.BLACK, board.getSquare(3, 5).occupiedBy());
-    assertEquals("Board: apply capture by black move not successful.", Colour.NONE, board.getSquare(4, 6).occupiedBy());
+    Square sfb3 = board.getSquare(4, 6);
+    Square stb3 = board.getSquare(3, 5);
+    Move mb3 = new Move(sfb3, stb3, true, false);
+    board.applyMove(mb3);
+    assertEquals("Board: applyMove black3 Capture not successful.", Colour.BLACK, board.getSquare(3, 5).occupiedBy());
+    assertEquals("Board: applyMove black3 Capture not successful.", Colour.NONE, board.getSquare(4, 6).occupiedBy());
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . . w . b b  7
+        5 6  . . . b . . . .  6
+        4 5  . . . . . b . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w . w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */
   }
 
   @Test
   public void BoardUnApplyMoveTest() {
+    // Test two standard moves, an EnPassant capture, and a standard capture
     Board board = new Board('e', 'c');
-    /*        A  B  C  D  E  F  G  H
-        7  8  .  .  .  .  .  .  .  .  8
-        6  7  b  b  .  b  b  b  b  b  7
-        5  6  .  .  .  .  .  .  .  .  6
-        4  5  .  .  .  .  .  .  .  .  5
-        3  4  .  .  .  .  .  .  .  .  4
-        2  3  .  .  .  .  .  .  .  .  3
-        1  2  w  w  w  w  .  w  w  w  2
-        0  1  .  .  .  .  .  .  .  .  1
-              A  B  C  D  E  F  G  H
-              0  1  2  3  4  5  6  7
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . b b b b b  7
+        5 6  . . . . . . . .  6
+        4 5  . . . . . . . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w w w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
     */
-    Square sf1 = board.getSquare(2, 1);
-    Square st1 = board.getSquare(2, 3);
-    Move m1 = new Move(sf1, st1, false, false);
-    board.applyMove(m1);
-    assertEquals("Board: apply white opening move not successful.", Colour.WHITE, board.getSquare(2, 3).occupiedBy());
-    assertEquals("Board: apply white opening move not successful.", Colour.NONE, board.getSquare(2, 1).occupiedBy());
-    Square sf2 = board.getSquare(5, 6);
-    Square st2 = board.getSquare(5, 4);
-    Move m2 = new Move(sf2, st2, false, false);
-    board.applyMove(m2);
-    assertEquals("Board: apply black opening move not successful.", Colour.BLACK, board.getSquare(5, 4).occupiedBy());
-    assertEquals("Board: apply black opening move not successful.", Colour.NONE, board.getSquare(5, 6).occupiedBy());
-    /*        A  B  C  D  E  F  G  H
-        7  8  .  .  .  .  .  .  .  .  8
-        6  7  b  b  .  b  b  -  b  b  7
-        5  6  .  .  .  .  .  .  .  .  6
-        4  5  .  .  .  .  .  b'  .  .  5
-        3  4  .  .  w' .  .  .  .  .  4
-        2  3  .  .  .  .  .  .  .  .  3
-        1  2  w  w  -  w  .  w  w  w  2
-        0  1  .  .  .  .  .  .  .  .  1
-              A  B  C  D  E  F  G  H
-              0  1  2  3  4  5  6  7
+    Square sfw1 = board.getSquare(2, 1);
+    Square stw1 = board.getSquare(2, 3);
+    Move mw1 = new Move(sfw1, stw1, false, false);
+    board.applyMove(mw1);
+    Square sfb1 = board.getSquare(5, 6);
+    Square stb1 = board.getSquare(5, 4);
+    Move mb1 = new Move(sfb1, stb1, false, false);
+    board.applyMove(mb1);
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . b b . b b  7
+        5 6  . . . . . . . .  6
+        4 5  . . . . . b . .  5
+        3 4  . . w . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w . w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
     */
-    Square sf3 = board.getSquare(2, 3);
-    Square st3 = board.getSquare(2, 4);
-    Move m3 = new Move(sf3, st3, false, false);
-    board.applyMove(m3);
-    assertEquals("Board: apply white move not successful.", Colour.WHITE, board.getSquare(2, 4).occupiedBy());
-    assertEquals("Board: apply white move not successful.", Colour.NONE, board.getSquare(2, 3).occupiedBy());
-    Square sf4 = board.getSquare(3, 6);
-    Square st4 = board.getSquare(3, 4);
-    Move m4 = new Move(sf4, st4, false, false);
-    board.applyMove(m4);
-    assertEquals("Board: apply black move not successful.", Colour.BLACK, board.getSquare(3, 4).occupiedBy());
-    assertEquals("Board: apply black move not successful.", Colour.NONE, board.getSquare(3, 6).occupiedBy());
-    /*        A  B  C  D  E  F  G  H
-        7  8  .  .  .  .  .  .  .  .  8
-        6  7  b  b  .  -  b  -  b  b  7
-        5  6  .  .  .  .  .  .  .  .  6
-        4  5  .  .  w' b' .  b'  .  .  5
-        3  4  .  .  -  .  .  .  .  .  4
-        2  3  .  .  .  .  .  .  .  .  3
-        1  2  w  w  -  w  .  w  w  w  2
-        0  1  .  .  .  .  .  .  .  .  1
-              A  B  C  D  E  F  G  H
-              0  1  2  3  4  5  6  7
+    Square sfw2 = board.getSquare(2, 3);
+    Square stw2 = board.getSquare(2, 4);
+    Move mw2 = new Move(sfw2, stw2, false, false);
+    board.applyMove(mw2);
+    Square sfb2 = board.getSquare(3, 6);
+    Square stb2 = board.getSquare(3, 4);
+    Move mb2 = new Move(sfb2, stb2, false, false);
+    board.applyMove(mb2);
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . . b . b b  7
+        5 6  . . . . . . . .  6
+        4 5  . . w b . b . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w . w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
     */
-    Square sf5 = board.getSquare(2, 4);
-    Square st5 = board.getSquare(3, 5);
-    Move m5 = new Move(sf5, st5, true, true);
-    board.applyMove(m5);
-    assertEquals("Board: apply enpassant move unsuccessful.", Colour.WHITE, board.getSquare(3, 5).occupiedBy());
-    assertEquals("Board: apply enpassant move unsuccessful.", Colour.NONE, board.getSquare(2, 4).occupiedBy());
-    assertEquals("Board: apply enpassant move unsuccessful.", Colour.NONE, board.getSquare(3, 4).occupiedBy());
-    /*        A  B  C  D  E  F  G  H
-        7  8  .  .  .  .  .  .  .  .  8
-        6  7  b  b  .  -  b  -  b  b  7
-        5  6  .  .  .  w' .  .  .  .  6
-        4  5  .  .  -  -  .  b'  .  .  5
-        3  4  .  .  -  .  .  .  .  .  4
-        2  3  .  .  .  .  .  .  .  .  3
-        1  2  w  w  -  w  .  w  w  w  2
-        0  1  .  .  .  .  .  .  .  .  1
-              A  B  C  D  E  F  G  H
-              0  1  2  3  4  5  6  7
+    Square sfw3 = board.getSquare(2, 4);
+    Square stw3 = board.getSquare(3, 5);
+    Move mw3 = new Move(sfw3, stw3, true, true);
+    board.applyMove(mw3);
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . . b . b b  7
+        5 6  . . . w . . . .  6
+        4 5  . . . . . b . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w . w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
     */
-    Square sf6 = board.getSquare(4, 6);
-    Square st6 = board.getSquare(3, 5);
-    Move m6 = new Move(sf6, st6, true, false);
-    board.applyMove(m6);
-    assertEquals("Board: apply capture by black move not successful.", Colour.BLACK, board.getSquare(3, 5).occupiedBy());
-    assertEquals("Board: apply capture by black move not successful.", Colour.NONE, board.getSquare(4, 6).occupiedBy());
+    Square sfb3 = board.getSquare(4, 6);
+    Square stb3 = board.getSquare(3, 5);
+    Move mb3 = new Move(sfb3, stb3, true, false);
+    board.applyMove(mb3);
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . . w . b b  7
+        5 6  . . . b . . . .  6
+        4 5  . . . . . b . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w . w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */
     
-    board.unapplyMove(m6);
-    assertEquals("Board: unapply capture by black move not successful.", Colour.WHITE, board.getSquare(3, 5).occupiedBy());
-    assertEquals("Board: unapply capture by black move not successful.", Colour.BLACK, board.getSquare(4, 6).occupiedBy());
-    board.unapplyMove(m5);
-    assertEquals("Board: unapply enpassant move unsuccessful.", Colour.NONE, board.getSquare(3, 5).occupiedBy());
-    assertEquals("Board: unapply enpassant move unsuccessful.", Colour.WHITE, board.getSquare(2, 4).occupiedBy());
-    assertEquals("Board: unapply enpassant move unsuccessful.", Colour.BLACK, board.getSquare(3, 4).occupiedBy());
-    board.unapplyMove(m4);
-    assertEquals("Board: unapply black move not successful.", Colour.NONE, board.getSquare(3, 4).occupiedBy());
-    assertEquals("Board: unapply black move not successful.", Colour.BLACK, board.getSquare(3, 6).occupiedBy());
-    board.unapplyMove(m3);
-    assertEquals("Board: unapply white move not successful.", Colour.NONE, board.getSquare(2, 4).occupiedBy());
-    assertEquals("Board: unapply white move not successful.", Colour.WHITE, board.getSquare(2, 3).occupiedBy());
-    board.unapplyMove(m2);
-    assertEquals("Board: unapply black opening move not successful.", Colour.NONE, board.getSquare(5, 4).occupiedBy());
-    assertEquals("Board: unapply black opening move not successful.", Colour.BLACK, board.getSquare(5, 6).occupiedBy());
-    board.unapplyMove(m1);
-    assertEquals("Board: unapply white opening move not successful.", Colour.NONE, board.getSquare(2, 3).occupiedBy());
-    assertEquals("Board: unapply white opening move not successful.", Colour.WHITE, board.getSquare(2, 1).occupiedBy());
-    
+    board.unapplyMove(mb3);
+    assertEquals("Board: unapplyMove black3 Capture not successful.", Colour.WHITE, board.getSquare(3, 5).occupiedBy());
+    assertEquals("Board: unapplyMove black3 Capture not successful.", Colour.BLACK, board.getSquare(4, 6).occupiedBy());
+    board.unapplyMove(mw3);
+    assertEquals("Board: unapplyMove white3 EnPassant unsuccessful.", Colour.NONE, board.getSquare(3, 5).occupiedBy());
+    assertEquals("Board: unapplyMove white3 EnPassant unsuccessful.", Colour.WHITE, board.getSquare(2, 4).occupiedBy());
+    assertEquals("Board: unapplyMove white3 EnPassant unsuccessful.", Colour.BLACK, board.getSquare(3, 4).occupiedBy());
+    board.unapplyMove(mb2);
+    assertEquals("Board: unapplyMove black2 not successful.", Colour.NONE, board.getSquare(3, 4).occupiedBy());
+    assertEquals("Board: unapplyMove black2 not successful.", Colour.BLACK, board.getSquare(3, 6).occupiedBy());
+    board.unapplyMove(mw2);
+    assertEquals("Board: unapplyMove white2 not successful.", Colour.NONE, board.getSquare(2, 4).occupiedBy());
+    assertEquals("Board: unapplyMove white2 not successful.", Colour.WHITE, board.getSquare(2, 3).occupiedBy());
+    board.unapplyMove(mb1);
+    assertEquals("Board: unapplyMove black1 not successful.", Colour.NONE, board.getSquare(5, 4).occupiedBy());
+    assertEquals("Board: unapplyMove black1 not successful.", Colour.BLACK, board.getSquare(5, 6).occupiedBy());
+    board.unapplyMove(mw1);
+    assertEquals("Board: unapplyMove white1 not successful.", Colour.NONE, board.getSquare(2, 3).occupiedBy());
+    assertEquals("Board: unapplyMove white1 not successful.", Colour.WHITE, board.getSquare(2, 1).occupiedBy());
   }
 
   @Test
@@ -282,8 +321,8 @@ public class PawnRaceTest {
       2 3 . . . . . . . . 3
       1 2 W W W W . W W W 2
       0 1 . . . . . . . . 1
-        A B C D E F G H
-        0 1 2 3 4 5 6 7
+          A B C D E F G H
+          0 1 2 3 4 5 6 7
     */
     Board board = new Board('e', 'c');
     assertEquals( "Board: Display method not working as expected."
