@@ -11,4 +11,20 @@ public class Util {
   public static int RowtoY(int row) {
     return row - 1;
   }
+
+  public static Square[] ShrinkSquaresArray(Square[] arr, int length) {
+    Square[] arr2 = new Square[length];
+    for (int i = 0; i < length; i++) {
+      arr2[i] = arr[i];
+    }
+    return arr2;
+  }
+
+  public static Move[] ShrinkMovesArray(Move[] arr, int length) {
+    Move[] arr2 = new Move[length];
+    for (int i = 0; i < length; i++) {
+      arr2[i] = arr[i];
+    }
+    return arr2;
+  }
 }
