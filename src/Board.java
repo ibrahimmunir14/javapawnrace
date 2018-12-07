@@ -84,13 +84,13 @@ public class Board {
   }
 
   public String genDisplayString() {
-    String displayString = "  A B C D E F G H\n";
+    String displayString = "   A B C D E F G H\n ";
     for (int y = 7; y >= 0; y--) {
       displayString += (y+1);
       for (int x = 0; x < 8; x++) {
         displayString += " " + gameBoard[x][y].occupiedBy().colourRep();
       }
-      displayString += " " + (y+1) + "\n";
+      displayString += " " + (y+1) + "\n ";
     }
     displayString += "  A B C D E F G H";
     return displayString;
