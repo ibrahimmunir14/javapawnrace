@@ -27,4 +27,14 @@ public class Util {
     }
     return arr2;
   }
+
+  public static boolean MovesContains(Move[] moves, Move move) {
+    for (Move m : moves) {
+      if (m == move) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }
