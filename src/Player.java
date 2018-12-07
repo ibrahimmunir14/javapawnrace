@@ -133,6 +133,7 @@ public class Player {
   }
 
   public void makeMove() {
+    // apply a random valid move to the game
     // does nothing if player is non-computer, or there are no valid moves
     if (isComputerPlayer) {
       Move[] validMoves = getAllValidMoves();
