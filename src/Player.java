@@ -41,11 +41,6 @@ public class Player {
   }
 
   public Move[] getAllValidMoves() {
-    // TODO
-    // Check elsewhere in program, making sure that we never try to access squares that don't exist
-    //   specifically, check if a pawn is on the last line, or the second last line, or on the right edge, or the left edge.
-    // TODO 
-    //
     Move[] allMoves = new Move[14];
     int index = 0;
     for (Square pawn : getAllPawns()) {
@@ -113,7 +108,22 @@ public class Player {
   }
 
   public boolean isPassedPawn(Square square) {
-    return false;
+    int pawnX = square.getX();
+    int pawnY = square.getY();
+    int side1X = pawnX - 1;
+    int side2X = pawnX + 1;
+    for (int i = pawnY; i < 8; i++) {
+      if (board.getSquare(pawnX, i).occupiedBy() == colour.opponentColour()) {
+        return false;
+      }
+      if (side1X >= 0 && board.getSquare(side1X, i).occupiedBy() == colour.opponentColour()) {
+        return false;
+      }
+      if (side2X <= 7 && board.getSquare(side2X, i).occupiedBy() == colour.opponentColour()) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public void makeMove() {
