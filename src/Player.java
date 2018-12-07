@@ -110,9 +110,14 @@ public class Player {
   public boolean isPassedPawn(Square square) {
     int pawnX = square.getX();
     int pawnY = square.getY();
+    if (square.occupiedBy() != colour) {
+      return false; // there isn't even a pawn on this square
+    }
     int side1X = pawnX - 1;
     int side2X = pawnX + 1;
-    for (int i = pawnY; i < 8; i++) {
+    int startline = (colour == Colour.WHITE ? pawnY + 1 : 1);
+    int lastline = (colour == Colour.WHITE ? 7 : pawnY);
+    for (int i = startline; i < lastline; i++) {
       if (board.getSquare(pawnX, i).occupiedBy() == colour.opponentColour()) {
         return false;
       }
