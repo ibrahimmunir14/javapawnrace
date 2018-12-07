@@ -577,20 +577,20 @@ public class PawnRaceTest {
     Player p = new Player(g, b, Colour.WHITE, false);
     Player q = new Player(g, b, Colour.BLACK, false);
     Move[] validMovesW1 = new Move[] {
-      makeMove(0, 1, 0, 2, false, false),
-      makeMove(0, 1, 0, 3, false, false),
-      makeMove(1, 1, 1, 2, false, false),
-      makeMove(1, 1, 1, 3, false, false),
-      makeMove(2, 1, 2, 2, false, false),
-      makeMove(2, 1, 2, 3, false, false),
-      makeMove(3, 1, 3, 2, false, false),
-      makeMove(3, 1, 3, 3, false, false),
-      makeMove(5, 1, 5, 2, false, false),
-      makeMove(5, 1, 5, 3, false, false),
-      makeMove(6, 1, 6, 2, false, false),
-      makeMove(6, 1, 6, 3, false, false),
-      makeMove(7, 1, 7, 2, false, false),
-      makeMove(7, 1, 7, 3, false, false)
+      createMove(0, 1, 0, 2, false, false),
+      createMove(0, 1, 0, 3, false, false),
+      createMove(1, 1, 1, 2, false, false),
+      createMove(1, 1, 1, 3, false, false),
+      createMove(2, 1, 2, 2, false, false),
+      createMove(2, 1, 2, 3, false, false),
+      createMove(3, 1, 3, 2, false, false),
+      createMove(3, 1, 3, 3, false, false),
+      createMove(5, 1, 5, 2, false, false),
+      createMove(5, 1, 5, 3, false, false),
+      createMove(6, 1, 6, 2, false, false),
+      createMove(6, 1, 6, 3, false, false),
+      createMove(7, 1, 7, 2, false, false),
+      createMove(7, 1, 7, 3, false, false)
     };
     Move[] validMovesW1p = p.getAllValidMoves();
     assertEquals("Player: getAllValidMoves has wrong length.", validMovesW1.length, validMovesW1p.length);
@@ -598,20 +598,20 @@ public class PawnRaceTest {
       compareMovesEqual("Player: getAllValidMoves White Opening Move #" + (i+1), validMovesW1[i], validMovesW1p[i]);
     }
     Move[] validMovesB1 = new Move[] {
-      makeMove(0, 6, 0, 5, false, false),
-      makeMove(0, 6, 0, 4, false, false),
-      makeMove(1, 6, 1, 5, false, false),
-      makeMove(1, 6, 1, 4, false, false),
-      makeMove(3, 6, 3, 5, false, false),
-      makeMove(3, 6, 3, 4, false, false),
-      makeMove(4, 6, 4, 5, false, false),
-      makeMove(4, 6, 4, 4, false, false),
-      makeMove(5, 6, 5, 5, false, false),
-      makeMove(5, 6, 5, 4, false, false),
-      makeMove(6, 6, 6, 5, false, false),
-      makeMove(6, 6, 6, 4, false, false),
-      makeMove(7, 6, 7, 5, false, false),
-      makeMove(7, 6, 7, 4, false, false)
+      createMove(0, 6, 0, 5, false, false),
+      createMove(0, 6, 0, 4, false, false),
+      createMove(1, 6, 1, 5, false, false),
+      createMove(1, 6, 1, 4, false, false),
+      createMove(3, 6, 3, 5, false, false),
+      createMove(3, 6, 3, 4, false, false),
+      createMove(4, 6, 4, 5, false, false),
+      createMove(4, 6, 4, 4, false, false),
+      createMove(5, 6, 5, 5, false, false),
+      createMove(5, 6, 5, 4, false, false),
+      createMove(6, 6, 6, 5, false, false),
+      createMove(6, 6, 6, 4, false, false),
+      createMove(7, 6, 7, 5, false, false),
+      createMove(7, 6, 7, 4, false, false)
     };
     Move[] validMovesB1p = q.getAllValidMoves();
     assertEquals("Player: getAllValidMoves has wrong length.", validMovesB1.length, validMovesB1p.length);
@@ -635,20 +635,20 @@ public class PawnRaceTest {
              0 1 2 3 4 5 6 7
     */
     Move[] validMovesW2 = new Move[] {
-      makeMove(0, 1, 0, 2, false, false),
-      makeMove(0, 1, 0, 3, false, false),
-      makeMove(1, 1, 1, 2, false, false),
-      makeMove(1, 1, 1, 3, false, false),
-      makeMove(2, 4, 2, 5, false, false),
-      makeMove(2, 4, 3, 5,  true,  true),
-      makeMove(3, 1, 3, 2, false, false),
-      makeMove(3, 1, 3, 3, false, false),
-      makeMove(5, 1, 5, 2, false, false),
-      makeMove(5, 1, 5, 3, false, false),
-      makeMove(6, 1, 6, 2, false, false),
-      makeMove(6, 1, 6, 3, false, false),
-      makeMove(7, 1, 7, 2, false, false),
-      makeMove(7, 1, 7, 3, false, false)
+      createMove(0, 1, 0, 2, false, false),
+      createMove(0, 1, 0, 3, false, false),
+      createMove(1, 1, 1, 2, false, false),
+      createMove(1, 1, 1, 3, false, false),
+      createMove(2, 4, 2, 5, false, false),
+      createMove(2, 4, 3, 5,  true,  true),
+      createMove(3, 1, 3, 2, false, false),
+      createMove(3, 1, 3, 3, false, false),
+      createMove(5, 1, 5, 2, false, false),
+      createMove(5, 1, 5, 3, false, false),
+      createMove(6, 1, 6, 2, false, false),
+      createMove(6, 1, 6, 3, false, false),
+      createMove(7, 1, 7, 2, false, false),
+      createMove(7, 1, 7, 3, false, false)
     };
     Move[] validMovesW2p = p.getAllValidMoves();
     assertEquals("Player: getAllValidMoves has wrong length.", validMovesW2.length, validMovesW2p.length);
@@ -669,18 +669,18 @@ public class PawnRaceTest {
              0 1 2 3 4 5 6 7
     */
     Move[] validMovesB2 = new Move[] {
-      makeMove(0, 6, 0, 5, false, false),
-      makeMove(0, 6, 0, 4, false, false),
-      makeMove(1, 6, 1, 5, false, false),
-      makeMove(1, 6, 1, 4, false, false),
-      makeMove(4, 6, 4, 5, false, false),
-      makeMove(4, 6, 4, 4, false, false),
-      makeMove(4, 6, 3, 5,  true, false),
-      makeMove(5, 4, 5, 3, false, false),
-      makeMove(6, 6, 6, 5, false, false),
-      makeMove(6, 6, 6, 4, false, false),
-      makeMove(7, 6, 7, 5, false, false),
-      makeMove(7, 6, 7, 4, false, false)
+      createMove(0, 6, 0, 5, false, false),
+      createMove(0, 6, 0, 4, false, false),
+      createMove(1, 6, 1, 5, false, false),
+      createMove(1, 6, 1, 4, false, false),
+      createMove(4, 6, 4, 5, false, false),
+      createMove(4, 6, 4, 4, false, false),
+      createMove(4, 6, 3, 5,  true, false),
+      createMove(5, 4, 5, 3, false, false),
+      createMove(6, 6, 6, 5, false, false),
+      createMove(6, 6, 6, 4, false, false),
+      createMove(7, 6, 7, 5, false, false),
+      createMove(7, 6, 7, 4, false, false)
     };
     Move[] validMovesB2p = q.getAllValidMoves();
     assertEquals("Player: getAllValidMoves has wrong length.", validMovesB2.length, validMovesB2p.length);
@@ -702,19 +702,19 @@ public class PawnRaceTest {
              0 1 2 3 4 5 6 7
     */
     Move[] validMovesW3 = new Move[] {
-      makeMove(0, 1, 0, 2, false, false),
-      makeMove(0, 1, 0, 3, false, false),
-      makeMove(1, 1, 1, 2, false, false),
-      makeMove(1, 1, 1, 3, false, false),
-      makeMove(3, 1, 3, 2, false, false),
-      makeMove(3, 1, 3, 3, false, false),
-      makeMove(3, 6, 3, 7, false, false),
-      makeMove(5, 1, 5, 2, false, false),
-      makeMove(5, 1, 5, 3, false, false),
-      makeMove(6, 1, 6, 2, false, false),
-      makeMove(6, 1, 6, 3, false, false),
-      makeMove(7, 1, 7, 2, false, false),
-      makeMove(7, 1, 7, 3, false, false)
+      createMove(0, 1, 0, 2, false, false),
+      createMove(0, 1, 0, 3, false, false),
+      createMove(1, 1, 1, 2, false, false),
+      createMove(1, 1, 1, 3, false, false),
+      createMove(3, 1, 3, 2, false, false),
+      createMove(3, 1, 3, 3, false, false),
+      createMove(3, 6, 3, 7, false, false),
+      createMove(5, 1, 5, 2, false, false),
+      createMove(5, 1, 5, 3, false, false),
+      createMove(6, 1, 6, 2, false, false),
+      createMove(6, 1, 6, 3, false, false),
+      createMove(7, 1, 7, 2, false, false),
+      createMove(7, 1, 7, 3, false, false)
     };
     Move[] validMovesW3p = p.getAllValidMoves();
     assertEquals("Player: getAllValidMoves has wrong length.", validMovesW3.length, validMovesW3p.length);
@@ -815,6 +815,35 @@ public class PawnRaceTest {
     assertTrue("Player: isPassedPawn gives False for passed black pawn.", q.isPassedPawn(b.getSquare(3, 3)));
   }
 
+  @Test
+  public void PlayerMakeMoveTest() {
+    Board board = new Board('e', 'c');
+    Game game = new Game(board);
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . b b b b b  7
+        5 6  . . . . . . . .  6
+        4 5  . . . . . . . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w w w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */
+    Player p = new Player(game, board, Colour.WHITE, true);
+    Player q = new Player(game, board, Colour.BLACK, true);
+    Move[] validMovesP;
+    Move[] validMovesQ;
+    for (int turn = 1; turn < 11; turn++) {
+      validMovesP = p.getAllValidMoves();
+      p.makeMove();
+      assertTrue("Player: applyMove p" + turn + " did not apply a valid move.", Util.MovesContains(validMovesP, game.getLastMove()));
+      validMovesQ = q.getAllValidMoves();
+      q.makeMove();
+      assertTrue("Player: applyMove q" + turn + " did not apply a valid move.", Util.MovesContains(validMovesQ, game.getLastMove()));
+    }
+  }
 
   private void compareMovesEqual(String msg, Move m1, Move m2) {
     if (m1 == null || m2 == null) {
@@ -830,7 +859,7 @@ public class PawnRaceTest {
     }
   }
 
-  private Move makeMove(int a, int b, int c, int d, boolean capture, boolean enPassant) {
+  private Move createMove(int a, int b, int c, int d, boolean capture, boolean enPassant) {
     return new Move(new Square(a, b), new Square(c, d), capture, enPassant);
   }
 }
