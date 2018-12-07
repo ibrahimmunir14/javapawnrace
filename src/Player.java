@@ -1,3 +1,4 @@
+import java.util.Random;
 
 public class Player {
   
@@ -111,7 +112,7 @@ public class Player {
     int pawnX = square.getX();
     int pawnY = square.getY();
     if (square.occupiedBy() != colour) {
-      return false; // there isn't even a pawn on this square
+      return false;
     }
     int side1X = pawnX - 1;
     int side2X = pawnX + 1;
@@ -132,6 +133,13 @@ public class Player {
   }
 
   public void makeMove() {
-
+    // does nothing if player is non-computer, or there are no valid moves
+    if (isComputerPlayer) {
+      Move[] validMoves = getAllValidMoves();
+      if (validMoves.length > 0) {
+        Move move = validMoves[new Random().nextInt(validMoves.length)];
+        game.applyMove(move);
+      }
+    }
   }
 }
