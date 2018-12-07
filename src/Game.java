@@ -36,46 +36,45 @@ public class Game {
   }
 
   public boolean isFinished() {
-    Player pl = new Player(this, board, Colour.WHITE, false);
-    if (pl.getAllValidMoves().length == 0) {
+    switch (getGameResult()) {
+      case BLACK:
+      case WHITE:
+      case NONE:
       return true;
+      default:
+      return false;
     }
-    else if (getLastMove().getTo().getY() == 0 && currentPlayer == Colour.WHITE) {
-      // last move sent a black pawn to the white home line
-      return true;
-    }
-    else if (getLastMove().getTo().getY() == 7 && currentPlayer == Colour.BLACK) {
-      // last move sent a white pawn to the black home line
-      return true;
-    }
-    else return false;
   }
 
   public Colour getGameResult() {
     Player pl = new Player(this, board, Colour.WHITE, false);
-    if (pl.getAllValidMoves().length == 0) {
-      return Colour.NONE;
-    }
-    else if (getLastMove().getTo().getY() == 0 && currentPlayer == Colour.WHITE) {
-      // last move sent a black pawn to the white home line
-      return Colour.BLACK;
+    if (getLastMove().getTo().getY() == 0 && currentPlayer == Colour.WHITE) {
+      return Colour.BLACK; // last move sent a black pawn to the white home line
     }
     else if (getLastMove().getTo().getY() == 7 && currentPlayer == Colour.BLACK) {
-      // last move sent a white pawn to the black home line
-      return Colour.WHITE;
+      return Colour.WHITE; // last move sent a white pawn to the black home line
+    }
+    else if (pl.getAllValidMoves().length == 0) {
+      return Colour.NONE; // no valid moves for current player: stalemate
     }
     else return null;
   }
 
   public Move parseMove(String san) {
-    if (san.length() == 2) { // standard move
+    // Pre: input is of the form [a-h]x[a-h][1-8] e.g. bxc4
+    // Case: standard move, one/two spaces forward
+    if (san.length() == 2) {
       char sanCol = san.charAt(0);
       char sanRow = san.charAt(1);
       int toX = Util.ColtoX(sanCol);
       int toY = Util.RowtoY(Character.getNumericValue(sanRow));
       Square sTo = board.getSquare(toX, toY);
       if (sTo.occupiedBy() != Colour.NONE) {
-        return null; // invalid move: square occupied
+        return null; // invalid move: to square already occupied
+      }
+      if (currentPlayer == Colour.WHITE ? toY == 0 || toY == 1 : toY == 7 || toY == 6) {
+        // pawn is trying to move to first/starting line
+        return null; // invalid move: can only move forwards
       }
       int fromX = toX;
       Square oneSquareBack = board.getSquare(fromX, (currentPlayer == Colour.WHITE ? toY-1 : toY+1));
@@ -90,31 +89,42 @@ public class Game {
         return new Move(twoSquareBack, sTo, false, false);
       }
       else {
-        return null;
+        return null; // invalid move: there is no pawn that can move to the to square
       }
     }
-    else if (san.length() == 4) { // capture move
+    // Case: capture move, one space forward-right or forward-left
+    else if (san.length() == 4) {
       char sanColFrom = san.charAt(0);
       char sanCol = san.charAt(2);
       char sanRow = san.charAt(3);
       int toX = Util.ColtoX(sanCol);
       int toY = Util.RowtoY(Character.getNumericValue(sanRow));
       Square sTo = board.getSquare(toX, toY);
+      if (sTo.occupiedBy() == currentPlayer) {
+        // invalid move: to square already occupied by player
+        return null;
+      }
+      if (currentPlayer == Colour.WHITE ? toY == 0 || toY == 1 : toY == 7 || toY == 6) {
+        // pawn is trying to move to first/starting line
+        return null; // invalid move: can only move forwards
+      }
+      if (currentPlayer == Colour.WHITE ? toY == 7 : toY == 0) {
+        // pawn is trying to capture a pawn on the last line
+        return null; // invalid move: no pawns can be captured on the last line
+      }
       int fromX = Util.ColtoX(sanColFrom);
       int fromY = currentPlayer == Colour.WHITE ? toY-1 : toY+1;
+      if (fromX != toX - 1 && fromX != toY - 1) {
+        return null; // invalid move: capture must be from an adjacent column
+      }
       Square sFrom = board.getSquare(fromX, fromY);
       Square enPassantSquare = board.getSquare(toX, (currentPlayer == Colour.WHITE ? toY-1 : toY+1));
       Square enPassantSquareHome = board.getSquare(toX, (currentPlayer == Colour.WHITE ? toY+1 : toY-1));
-      // TODO: Check if Square is on FIRST/LAST COLUMN
       if (sFrom.occupiedBy() != currentPlayer) {
         // invalid move: from square not occupied by player
         return null;
       }
-      if (sTo.occupiedBy() == currentPlayer) {
-        // invalid move: to square occupied by player
-        return null;
-      }
-      else if (sTo.occupiedBy() == currentPlayer.opponentColour()) {
+      if (sTo.occupiedBy() == currentPlayer.opponentColour()) {
         // standard capture: to square occupied by opponent
         return new Move(sFrom, sTo, true, false);
       }
