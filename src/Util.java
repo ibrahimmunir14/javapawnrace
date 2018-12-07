@@ -30,7 +30,8 @@ public class Util {
 
   public static boolean MovesContains(Move[] moves, Move move) {
     for (Move m : moves) {
-      if (m == move) {
+      if ( m.getFrom() == move.getFrom()
+        && m.getTo() == move.getTo()) {
         return true;
       }
     }
