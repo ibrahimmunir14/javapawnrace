@@ -36,22 +36,18 @@ public class Game {
   }
 
   public boolean isFinished() {
-    switch (getGameResult()) {
-      case BLACK:
-      case WHITE:
-      case NONE:
-      return true;
-      default:
+    if (getGameResult() == null) {
       return false;
     }
+    return true;
   }
 
   public Colour getGameResult() {
     Player pl = new Player(this, board, Colour.WHITE, false);
-    if (getLastMove().getTo().getY() == 0 && currentPlayer == Colour.WHITE) {
+    if (index != 0 && getLastMove().getTo().getY() == 0 && currentPlayer == Colour.WHITE) {
       return Colour.BLACK; // last move sent a black pawn to the white home line
     }
-    else if (getLastMove().getTo().getY() == 7 && currentPlayer == Colour.BLACK) {
+    else if (index != 0 && getLastMove().getTo().getY() == 7 && currentPlayer == Colour.BLACK) {
       return Colour.WHITE; // last move sent a white pawn to the black home line
     }
     else if (pl.getAllValidMoves().length == 0) {
