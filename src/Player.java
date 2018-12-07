@@ -41,55 +41,68 @@ public class Player {
   }
 
   public Move[] getAllValidMoves() {
+    // TODO
+    // Check elsewhere in program, making sure that we never try to access squares that don't exist
+    //   specifically, check if a pawn is on the last line, or the second last line, or on the right edge, or the left edge.
+    // TODO 
+    //
     Move[] allMoves = new Move[14];
     int index = 0;
     for (Square pawn : getAllPawns()) {
-      if (colour == Colour.WHITE ? pawn.getY() == 7 : pawn.getY() == 0) { // pawn on last line
+      // Case: pawn is on the last line (-> game has been won) -> no moves for this pawn.
+      if (colour == Colour.WHITE ? pawn.getY() == 7 : pawn.getY() == 0) {
         continue;
       }
-      if (colour == Colour.WHITE ? pawn.getY() == 6 : pawn.getY() == 1) { // pawn on penultimate line
+      // Case: pawn is on the penultimate line -> only possible move is one forward, if its empty.
+      Square sqInFront = board.getSquare(pawn.getX(), (colour == Colour.WHITE ? pawn.getY()+1 : pawn.getY()-1));
+      if ( colour == Colour.WHITE
+         ? (pawn.getY() == 6 && sqInFront.occupiedBy() == Colour.NONE)
+         : (pawn.getY() == 1 && sqInFront.occupiedBy() == Colour.NONE) ) {
         allMoves[index] = new Move(pawn, board.getSquare(pawn.getX(), (colour == Colour.WHITE ? 7 : 0)), false, false);
         index++;
         continue;
       }
-      Square sqInFront = board.getSquare(pawn.getX(), (colour == Colour.WHITE ? pawn.getY()+1 : pawn.getY()-1));
-      if (sqInFront.occupiedBy() == Colour.NONE) {
-        // there is an empty square in front
+      // Cases: pawn is on any other line
+      //  Case: standard move: pawn moving forwards
+      if (sqInFront.occupiedBy() == Colour.NONE) { // square in front is empty
         allMoves[index] = new Move(pawn, sqInFront, false, false);
         index++;
-        if (colour == Colour.WHITE ? pawn.getY() == 1 : pawn.getY() == 6) {
+        if (colour == Colour.WHITE ? pawn.getY() == 1 : pawn.getY() == 6) { // pawn is on starting line
           Square sq2InFront = board.getSquare(pawn.getX(), (colour == Colour.WHITE ? pawn.getY()+2 : pawn.getY()-2));
-          if (sq2InFront.occupiedBy() == Colour.NONE) {
+          if (sq2InFront.occupiedBy() == Colour.NONE) { // two squares in front are empty
             // this pawn can play a starting move two squares forward
             allMoves[index] = new Move(pawn, sq2InFront, false, false);
             index++;
           }
         }
       }
-      if (colour == Colour.WHITE ? pawn.getX() != 7 : pawn.getX() != 0) {
-        // pawn is not on the right edge
+      //  Case: capture move: pawn taking forward_right square
+      if (colour == Colour.WHITE ? pawn.getX() != 7 : pawn.getX() != 0) { // pawn is not on the right edge
         Square sqForwardRight = board.getSquare((colour == Colour.WHITE ? pawn.getX()+1 : pawn.getX()-1), (colour == Colour.WHITE ? pawn.getY()+1 : pawn.getY()-1));
         Square sqRight = board.getSquare((colour == Colour.WHITE ? pawn.getX()+1 : pawn.getX()-1), pawn.getY());
-        if (sqForwardRight.occupiedBy() == colour.opponentColour()) {
-          // forward right square can be captured
+        if (sqForwardRight.occupiedBy() == colour.opponentColour()) { // forward right square can be captured standard
           allMoves[index] = new Move(pawn, sqForwardRight, true, false);
           index++;
         }
-        else if (sqRight.occupiedBy() == colour.opponentColour() && game.getLastMove().getTo() == sqRight && game.getLastMove().getFrom().getY() == (colour == Colour.WHITE ? sqRight.getY() + 2 : sqRight.getY() - 2)) {
+        else if ( sqRight.occupiedBy() == colour.opponentColour() // right square occupied by opponent
+               && game.getLastMove().getTo() == sqRight // opponents last move was to the right square
+               && game.getLastMove().getFrom().getY() == (colour == Colour.WHITE ? 6 : 1)) { // opponents last move was from starting line
           // forward right square can be taken by enpassant
           allMoves[index] = new Move(pawn, sqForwardRight, true, true);
           index++;
         }
       }
-      if (colour == Colour.WHITE ? pawn.getX() != 0 : pawn.getX() != 7) {
+      //  Case: capture move: pawn taking forward_left square
+      if (colour == Colour.WHITE ? pawn.getX() != 0 : pawn.getX() != 7) { // pawn is not on the left edge
         Square sqForwardLeft = board.getSquare((colour == Colour.WHITE ? pawn.getX()-1 : pawn.getX()+1), (colour == Colour.WHITE ? pawn.getY()+1 : pawn.getY()-1));
         Square sqLeft = board.getSquare((colour == Colour.WHITE ? pawn.getX()-1 : pawn.getX()+1), pawn.getY());
-        if (sqForwardLeft.occupiedBy() == colour.opponentColour()) {
-          // forward left square can be captured
+        if (sqForwardLeft.occupiedBy() == colour.opponentColour()) { // forward left square can be captured standard
           allMoves[index] = new Move(pawn, sqForwardLeft, true, false);
           index++;
         }
-        else if (sqLeft.occupiedBy() == colour.opponentColour() && game.getLastMove().getTo() == sqLeft && game.getLastMove().getFrom().getY() == (colour == Colour.WHITE ? sqLeft.getY() + 2 : sqLeft.getY() - 2)) {
+        else if ( sqLeft.occupiedBy() == colour.opponentColour() // left square occupied by opponent
+               && game.getLastMove().getTo() == sqLeft // opponents last move was to left square
+               && game.getLastMove().getFrom().getY() == (colour == Colour.WHITE ? 6 : 1)) { // opponents last move was from starting line
           // forward left square can be taken by enpassant
           allMoves[index] = new Move(pawn, sqForwardLeft, true, true);
           index++;
