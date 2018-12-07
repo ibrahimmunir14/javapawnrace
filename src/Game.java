@@ -113,8 +113,8 @@ public class Game {
         return null; // invalid move: no pawns can be captured on the last line
       }
       int fromX = Util.ColtoX(sanColFrom);
-      int fromY = currentPlayer == Colour.WHITE ? toY-1 : toY+1;
-      if (fromX != toX - 1 && fromX != toY - 1) {
+      int fromY = (currentPlayer == Colour.WHITE ? toY-1 : toY+1);
+      if (fromX != toX - 1 && fromX != toX + 1) {
         return null; // invalid move: capture must be from an adjacent column
       }
       Square sFrom = board.getSquare(fromX, fromY);
