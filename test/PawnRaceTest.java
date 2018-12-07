@@ -831,6 +831,9 @@ public class PawnRaceTest {
              A B C D E F G H
              0 1 2 3 4 5 6 7
     */
+    Player o = new Player(game, board, Colour.WHITE, false);
+    o.makeMove();
+    assertEquals("Player: applyMove applied a move for a non-computer player.", null, game.getLastMove());
     Player p = new Player(game, board, Colour.WHITE, true);
     Player q = new Player(game, board, Colour.BLACK, true);
     Move[] validMovesP;
