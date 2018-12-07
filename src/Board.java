@@ -80,7 +80,7 @@ public class Board {
   }
 
   public void display() {
-    System.out.print(genDisplayString());
+    System.out.println(genDisplayString());
   }
 
   public String genDisplayString() {
