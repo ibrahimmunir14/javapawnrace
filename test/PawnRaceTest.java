@@ -326,16 +326,16 @@ public class PawnRaceTest {
     */
     Board board = new Board('e', 'c');
     assertEquals( "Board: Display method not working as expected."
-                , "  A B C D E F G H\n"
-                + "8 . . . . . . . . 8\n"
-                + "7 B B . B B B B B 7\n"
-                + "6 . . . . . . . . 6\n"
-                + "5 . . . . . . . . 5\n"
-                + "4 . . . . . . . . 4\n"
-                + "3 . . . . . . . . 3\n"
-                + "2 W W W W . W W W 2\n"
-                + "1 . . . . . . . . 1\n"
-                + "  A B C D E F G H"
+                , "   A B C D E F G H\n"
+                + " 8 . . . . . . . . 8\n"
+                + " 7 B B . B B B B B 7\n"
+                + " 6 . . . . . . . . 6\n"
+                + " 5 . . . . . . . . 5\n"
+                + " 4 . . . . . . . . 4\n"
+                + " 3 . . . . . . . . 3\n"
+                + " 2 W W W W . W W W 2\n"
+                + " 1 . . . . . . . . 1\n"
+                + "   A B C D E F G H"
                 , board.genDisplayString());
     Square sf = board.getSquare(2, 1);
     Square st = board.getSquare(2, 3);
@@ -354,16 +354,16 @@ public class PawnRaceTest {
     m = new Move(sf, st, false, false);
     board.applyMove(m);
     assertEquals( "Board: Display method not working as expected."
-                , "  A B C D E F G H\n"
-                + "8 . . . . . . . . 8\n"
-                + "7 B B . . B . B B 7\n"
-                + "6 . . . . . . . . 6\n"
-                + "5 . . W B . B . . 5\n"
-                + "4 . . . . . . . . 4\n"
-                + "3 . . . . . . . . 3\n"
-                + "2 W W . W . W W W 2\n"
-                + "1 . . . . . . . . 1\n"
-                + "  A B C D E F G H"
+                , "   A B C D E F G H\n"
+                + " 8 . . . . . . . . 8\n"
+                + " 7 B B . . B . B B 7\n"
+                + " 6 . . . . . . . . 6\n"
+                + " 5 . . W B . B . . 5\n"
+                + " 4 . . . . . . . . 4\n"
+                + " 3 . . . . . . . . 3\n"
+                + " 2 W W . W . W W W 2\n"
+                + " 1 . . . . . . . . 1\n"
+                + "   A B C D E F G H"
                 , board.genDisplayString());
   }
 
@@ -422,6 +422,12 @@ public class PawnRaceTest {
              A B C D E F G H
              0 1 2 3 4 5 6 7
     */
+    assertEquals("Game: parseMove has not rejected a move with invalid coordinates.", null, game.parseMove("`3"));
+    assertEquals("Game: parseMove has not rejected a move with invalid coordinates.", null, game.parseMove("i3"));
+    assertEquals("Game: parseMove has not rejected a move with invalid coordinates.", null, game.parseMove("c8"));
+    assertEquals("Game: parseMove has not rejected a move with invalid coordinates.", null, game.parseMove("`8"));
+    assertEquals("Game: parseMove has not rejected a move with invalid coordinates.", null, game.parseMove("i8"));
+    assertEquals("Game: parseMove has not rejected a move with invalid coordinates.", null, game.parseMove("`3"));
     compareMovesEqual("Game: parseMove standard-white-one", new Move(new Square(1, 1), new Square(1, 2), false, false), game.parseMove("b3"));
     compareMovesEqual("Game: parseMove standard-white-two", new Move(new Square(7, 1), new Square(7, 3), false, false), game.parseMove("h4"));
     game.applyMove(game.parseMove("c4"));

@@ -57,13 +57,17 @@ public class Game {
   }
 
   public Move parseMove(String san) {
-    // Pre: input is of the form [a-h]x[a-h][1-8] e.g. bxc4
+    // Pre: format is [letter][letter][letter][integer]
+    //      accepted format is [a-h]x[a-h][1-8]
     // Case: standard move, one/two spaces forward
     if (san.length() == 2) {
       char sanCol = san.charAt(0);
       char sanRow = san.charAt(1);
       int toX = Util.ColtoX(sanCol);
       int toY = Util.RowtoY(Character.getNumericValue(sanRow));
+      if (toX < 0 || toX > 7 || toY < 0 || toY > 7) {
+        return null;
+      }
       Square sTo = board.getSquare(toX, toY);
       if (sTo.occupiedBy() != Colour.NONE) {
         return null; // invalid move: to square already occupied
@@ -90,11 +94,18 @@ public class Game {
     }
     // Case: capture move, one space forward-right or forward-left
     else if (san.length() == 4) {
+      if (san.charAt(1) != 'x') {
+        return null;
+      }
       char sanColFrom = san.charAt(0);
       char sanCol = san.charAt(2);
       char sanRow = san.charAt(3);
       int toX = Util.ColtoX(sanCol);
       int toY = Util.RowtoY(Character.getNumericValue(sanRow));
+      int fromX = Util.ColtoX(sanColFrom);
+      if (toX < 0 || toX > 7 || toY < 0 || toY > 7 || fromX < 0 || fromX > 7) {
+        return null;
+      }
       Square sTo = board.getSquare(toX, toY);
       if (sTo.occupiedBy() == currentPlayer) {
         // invalid move: to square already occupied by player
@@ -108,7 +119,6 @@ public class Game {
         // pawn is trying to capture a pawn on the last line
         return null; // invalid move: no pawns can be captured on the last line
       }
-      int fromX = Util.ColtoX(sanColFrom);
       int fromY = (currentPlayer == Colour.WHITE ? toY-1 : toY+1);
       if (fromX != toX - 1 && fromX != toX + 1) {
         return null; // invalid move: capture must be from an adjacent column
@@ -124,8 +134,9 @@ public class Game {
         // standard capture: to square occupied by opponent
         return new Move(sFrom, sTo, true, false);
       }
-      else if (enPassantSquare.occupiedBy() == currentPlayer.opponentColour() && getLastMove().getFrom() == enPassantSquareHome && getLastMove().getTo() == enPassantSquare) {
-        // en passant capture: toSquare is empty, enPassantSquare occupied by opponent, last move was right enpassant move
+      else if (enPassantSquare.occupiedBy() == currentPlayer.opponentColour()
+            && getLastMove().getFrom() == enPassantSquareHome && getLastMove().getTo() == enPassantSquare) {
+        // en passant capture: toSquare empty, enPassantSquare has opponent, last move was correct opening move
         return new Move(sFrom, sTo, true, true);
       }
       return null;
