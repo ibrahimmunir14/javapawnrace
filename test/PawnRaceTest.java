@@ -723,6 +723,78 @@ public class PawnRaceTest {
     }
   }
 
+  @Test
+  public void PlayerisPassedPawnTest() {
+    Board b = new Board('e', 'c');
+    Game g = new Game(b);
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . b b b b b  7
+        5 6  . . . . . . . .  6
+        4 5  . . . . . . . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w w w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */
+    Player p = new Player(g, b, Colour.WHITE, false);
+    Player q = new Player(g, b, Colour.BLACK, false);
+    assertFalse("Player: isPassedPawn gives True for non-passed pawn.", p.isPassedPawn(b.getSquare(2, 1)));
+    assertFalse("Player: isPassedPawn gives True for non-passed pawn.", p.isPassedPawn(b.getSquare(7, 1)));
+    assertFalse("Player: isPassedPawn gives True for non-passed pawn.", q.isPassedPawn(b.getSquare(6, 6)));
+    assertFalse("Player: isPassedPawn gives True for non-passed pawn.", q.isPassedPawn(b.getSquare(0, 6)));
+    assertFalse("Player: isPassedPawn gives True for empty square.", p.isPassedPawn(b.getSquare(4, 1)));
+    assertFalse("Player: isPassedPawn gives True for empty square.", q.isPassedPawn(b.getSquare(2, 6)));
+    assertFalse("Player: isPassedPawn gives True for empty square.", p.isPassedPawn(b.getSquare(3, 3)));
+    assertFalse("Player: isPassedPawn gives True for empty square.", q.isPassedPawn(b.getSquare(3, 3)));
+    g.applyMove(g.parseMove("c4"));
+    g.applyMove(g.parseMove("b5"));
+    g.applyMove(g.parseMove("c5"));
+    g.applyMove(g.parseMove("e5"));
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b . . b . . b b  7
+        5 6  . . . . . . . .  6
+        4 5  . b w . b . . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w . w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */
+    g.applyMove(g.parseMove("h3"));
+    g.applyMove(g.parseMove("d6"));
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b . . . . . b b  7
+        5 6  . . . b . . . .  6
+        4 5  . b w . b . . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . w  3
+        1 2  w w . w . w w .  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */
+    g.applyMove(g.parseMove("cxd6"));
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b . . . . . b b  7
+        5 6  . . . w . . . .  6
+        4 5  . b . . b . . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . w  3
+        1 2  w w . w . w w .  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */ // white pawn on d6 is a passed pawn
+  }
+
+
   private void compareMovesEqual(String msg, Move m1, Move m2) {
     if (m1 == null || m2 == null) {
       assertTrue(msg + " has a null move.", false);
