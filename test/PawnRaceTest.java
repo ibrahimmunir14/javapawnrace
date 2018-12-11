@@ -854,6 +854,51 @@ public class PawnRaceTest {
     }
   }
 
+  @Test
+  public void PlayerEvalPositionTest() {
+    Board board = new Board('e', 'c');
+    Game g = new Game(board);
+    /*       A B C D E F G H
+        7 8  . . . . . . . .  8
+        6 7  b b . b b b b b  7
+        5 6  . . . . . . . .  6
+        4 5  . . . . . . . .  5
+        3 4  . . . . . . . .  4
+        2 3  . . . . . . . .  3
+        1 2  w w w w . w w w  2
+        0 1  . . . . . . . .  1
+             A B C D E F G H
+             0 1 2 3 4 5 6 7
+    */
+    Player p = new Player(g, board, Colour.WHITE, true);
+    Player q = new Player(g, board, Colour.BLACK, true);
+    g.setAIPlayer(Colour.WHITE);
+    assertEquals("Player evalPosition failed.", 0, p.evalPosition());
+    assertEquals("Player evalPosition failed.", 0, q.evalPosition());
+    g.applyMove(g.parseMove("c4"));
+    g.applyMove(g.parseMove("b5"));
+    g.applyMove(g.parseMove("c5"));
+    g.applyMove(g.parseMove("e5"));
+    g.applyMove(g.parseMove("h3"));
+    g.applyMove(g.parseMove("d6"));
+    g.applyMove(g.parseMove("h4"));
+    g.applyMove(g.parseMove("d5"));
+    g.applyMove(g.parseMove("d4"));
+    g.applyMove(g.parseMove("exd4"));
+    assertEquals("Player evalPosition failed.", -1, p.evalPosition());
+    assertEquals("Player evalPosition failed.", -1, q.evalPosition());
+    Move[] validMovesP;
+    Move[] validMovesQ;
+    for (int turn = 1; turn < 6; turn++) {
+      validMovesP = p.getAllValidMoves();
+      p.makeMove();
+      validMovesQ = q.getAllValidMoves();
+      q.makeMove();
+      assertEquals("Player evalPosition failed.", q.evalPosition(), p.evalPosition());
+    }
+  }
+
+
   private void compareMovesEqual(String msg, Move m1, Move m2) {
     if (m1 == null || m2 == null) {
       assertTrue(msg + " has a null move.", false);

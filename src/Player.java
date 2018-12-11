@@ -145,5 +145,78 @@ public class Player {
       }
     }
   }
+
+  public void makeAIMove(int depth) {
+    int maxEval = Integer.MIN_VALUE;
+    Move moveToMake = null;
+    int alpha = Integer.MIN_VALUE;
+    int beta = Integer.MAX_VALUE;
+    for (Move child : getAllValidMoves()) {
+      game.applyMove(child);
+      int eval = opponent.minimax(depth-1, alpha, beta, false);
+      game.unapplyMove();
+      if (eval >= maxEval) {
+        maxEval = eval;
+        moveToMake = child;
+      }
+      alpha = Math.max(alpha, eval);
+      if (beta <= alpha) {
+        break;
+      }
+    }
+    game.applyMove(moveToMake);
+  }
+
+  private int minimax(int depth, int alpha, int beta, boolean maximisingPlayer) {
+    if (depth == 0 || game.isFinished()) {
+      return evalPosition();
+    }
+    if (maximisingPlayer) {
+      int maxEval = Integer.MIN_VALUE;
+      for (Move child : getAllValidMoves()) {
+        game.applyMove(child);
+        int eval = opponent.minimax(depth-1, alpha, beta, false);
+        game.unapplyMove();
+        maxEval = Math.max(maxEval, eval);
+        alpha = Math.max(alpha, eval);
+        if (beta <= alpha) {
+          break;
+        }
+      }
+      return maxEval;
+    }
+    else {
+      int minEval = Integer.MAX_VALUE;
+      for (Move child : getAllValidMoves()) {
+        game.applyMove(child);
+        int eval = opponent.minimax(depth-1, alpha, beta, true);
+        game.unapplyMove();
+        minEval = Math.min(minEval, eval);
+        beta = Math.min(beta, eval);
+        if (beta <= alpha) {
+          break;
+        }
+      }
+      return minEval;
+    }
+  }
+
+  public int evalPosition() {
+    int score = 0;
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 8; j++) {
+        if (board.getSquare(i, j).occupiedBy() == game.getAIPlayer()) {
+          score++;
+        }
+        else if (board.getSquare(i, j).occupiedBy() == game.getAIPlayer().opponentColour()){
+          score--;
+        }
+      }
+    }
+    return score;
+  }
+  // minimax(currentPosition, 3, -infinity, infinity, true)
+  // position here can be take from last move, so dont need argument?
+
   
 }
