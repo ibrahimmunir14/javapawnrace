@@ -3,12 +3,21 @@ public class Game {
   private Move[] moves;
   private int index;
   private Colour currentPlayer;
+  private Colour aiPlayer;
 
   public Game(Board board) {
     this.board = board;
     moves = new Move[96];
     index = 0;
     currentPlayer = Colour.WHITE;
+  }
+
+  public void setAIPlayer(Colour aiPlayer) {
+    this.aiPlayer = aiPlayer;
+  }
+
+  public Colour getAIPlayer() {
+    return aiPlayer;
   }
 
   public Colour getCurrentPlayer() {
@@ -43,7 +52,7 @@ public class Game {
   }
 
   public Colour getGameResult() {
-    Player pl = new Player(this, board, Colour.WHITE, false);
+    Player pl = new Player(this, board, currentPlayer, false);
     if (index != 0 && getLastMove().getTo().getY() == 0 && currentPlayer == Colour.WHITE) {
       return Colour.BLACK; // last move sent a black pawn to the white home line
     }
