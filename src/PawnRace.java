@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public class PawnRace {
-  public static void main2(String[] args) {
+  public static void main(String[] args) {
     Board board = new Board(args[2].toLowerCase().charAt(0), args[3].toLowerCase().charAt(0));
     Game game = new Game(board);
     Player p1 = new Player(game, board, Colour.WHITE, (args[0].toLowerCase().charAt(0) == 'p' ? false : true));
@@ -15,6 +15,7 @@ public class PawnRace {
     System.out.println(" ====  Ibrahim Munir-Zubair ==== ");
     System.out.println(" =============================== ");
     System.out.println(); System.out.println();
+    int deep = 0;
     while (!game.isFinished()) {
       board.display();
       System.out.println();
@@ -22,7 +23,7 @@ public class PawnRace {
       Move thisMove = null;
       // Computer's turn
       if (currentPlayer.isComputerPlayer()) {
-        currentPlayer.makeAIMove(2);
+        currentPlayer.makeAIMove(2 + (deep/3));
         thisMove = game.getLastMove();
       }
       // Player's turn
@@ -39,6 +40,7 @@ public class PawnRace {
       System.out.println(currentPlayer.getColour().colourString() + " has played " + thisMove.getSAN() + ".");
       System.out.println(" ------------------------------- ");
       System.out.println();
+      deep++;
     }
     System.out.println();
     System.out.println(" =========  GAME OVER  ========= ");
@@ -61,20 +63,19 @@ public class PawnRace {
 
   
 
-  public static void main(String[] args) {
+  public static void main2(String[] args) {
     int whiteWins = 0;
     int blackWins = 0;
-    for (int i = 0; i < 2000; i++) {
+    for (int i = 0; i < 10; i++) {
       Board board = new Board('c', 'e');
       Game game = new Game(board);
       Player p1 = new Player(game, board, Colour.WHITE, true);
       Player p2 = new Player(game, board, Colour.BLACK, true);
       p1.setOpponent(p2);
       p2.setOpponent(p1);
-      int deep = 2;
+      int deep = 1;
       game.setAIPlayer(p1.isComputerPlayer() ? p1:p2);
-      p1.makeAIMove(2);
-      p2.makeMove();
+      p1.makeMove();
       while (!game.isFinished()) {
         // board.display();
         // System.out.println();
@@ -83,19 +84,19 @@ public class PawnRace {
         Move thisMove = null;
         // Computer's turn
         if (currentPlayer == p1) {
-          currentPlayer.makeAIMove(2+(deep/3));
+          currentPlayer.makeAIMove(4);
           thisMove = game.getLastMove();
         }
         // Player's turn
         else {
-          currentPlayer.makeAIMove(4);
+          currentPlayer.makeAIMove(2+(deep/3));
           thisMove = game.getLastMove();
         }
         deep++;
         // System.out.println(currentPlayer.getColour().colourString() + " has played " + thisMove.getSAN() + ".");
         // System.out.println(" ------------------------------- ");
         // System.out.println();
-        // System.out.print(thisMove.getSAN() + "  ");
+        System.out.print(thisMove.getSAN() + "  ");
       }
       // System.out.println();
       // System.out.println(" =========  GAME OVER  ========= ");
@@ -118,7 +119,7 @@ public class PawnRace {
       System.out.println(((100*whiteWins) / (i+1)) + "%  " + ((100*blackWins) / (i+1)) + "%");
     }
     System.out.println();System.out.println();System.out.println();
-    System.out.println("White Win Percentage: " + ((100*whiteWins) / 2000));
-    System.out.println("Black Win Percentage: " + ((100*blackWins) / 2000));
+    System.out.println("White Win Percentage: " + ((100*whiteWins) / 10));
+    System.out.println("Black Win Percentage: " + ((100*blackWins) / 10));
   }
 }
