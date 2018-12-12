@@ -64,18 +64,16 @@ public class PawnRace {
   public static void main(String[] args) {
     int whiteWins = 0;
     int blackWins = 0;
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 2000; i++) {
       Board board = new Board('c', 'e');
       Game game = new Game(board);
       Player p1 = new Player(game, board, Colour.WHITE, true);
       Player p2 = new Player(game, board, Colour.BLACK, true);
       p1.setOpponent(p2);
       p2.setOpponent(p1);
-      
-      //game.setAIPlayer(p1.isComputerPlayer() ? Colour.WHITE : Colour.BLACK);
-      p1.makeMove();
-      p2.makeMove();
-      p1.makeMove();
+      int deep = 2;
+      game.setAIPlayer(p1.isComputerPlayer() ? p1:p2);
+      p1.makeAIMove(2);
       p2.makeMove();
       while (!game.isFinished()) {
         // board.display();
@@ -85,14 +83,15 @@ public class PawnRace {
         Move thisMove = null;
         // Computer's turn
         if (currentPlayer == p1) {
-          currentPlayer.makeAIMove(8);
+          currentPlayer.makeAIMove(2+(deep/3));
           thisMove = game.getLastMove();
         }
         // Player's turn
         else {
-          currentPlayer.makeAIMove(1);
+          currentPlayer.makeAIMove(4);
           thisMove = game.getLastMove();
         }
+        deep++;
         // System.out.println(currentPlayer.getColour().colourString() + " has played " + thisMove.getSAN() + ".");
         // System.out.println(" ------------------------------- ");
         // System.out.println();
@@ -116,10 +115,10 @@ public class PawnRace {
         blackWins++;
         break;
       }
-      System.out.println(((100*whiteWins) / (i+1)) + "%");
+      System.out.println(((100*whiteWins) / (i+1)) + "%  " + ((100*blackWins) / (i+1)) + "%");
     }
     System.out.println();System.out.println();System.out.println();
-    System.out.println("White Win Percentage: " + ((100*whiteWins) / 100));
-    System.out.println("Black Win Percentage: " + ((100*blackWins) / 100));
+    System.out.println("White Win Percentage: " + ((100*whiteWins) / 2000));
+    System.out.println("Black Win Percentage: " + ((100*blackWins) / 2000));
   }
 }

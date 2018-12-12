@@ -181,14 +181,17 @@ public class Player {
     Move moveToMake = null;
     int alpha = Integer.MIN_VALUE;
     int beta = Integer.MAX_VALUE;
-    for (Move child : orderValidMoves(getAllValidMoves())) {
+    //System.out.println("Making AI Move for " + colour + " " + game.getAIPlayer().getColour());
+    Move[] validMoves = orderValidMoves(getAllValidMoves());
+    for (Move child : validMoves) {
       game.applyMove(child);
+      //System.out.println("Try: " + child.getSAN());
       int eval = opponent.minimax(depth-1, alpha, beta, false);
       game.unapplyMove();
-      // System.out.println();
-      // System.out.print(child.getSAN() + " ");
-      // System.out.print(eval + " ");
-      if (eval >= maxEval) {
+      //System.out.println();
+      //System.out.print("Tried: " + child.getSAN() + " " + eval + " (depth: " + depth + ") alpha " + alpha + " beta " + beta);
+      //System.out.println();
+      if (eval > maxEval) {
         maxEval = eval;
         moveToMake = child;
       }
@@ -197,7 +200,7 @@ public class Player {
         break;
       }
     }
-    game.applyMove(moveToMake);
+    game.applyMove(moveToMake == null ? validMoves[0] : moveToMake);
   }
 
   private int minimax(int depth, int alpha, int beta, boolean maximisingPlayer) {
@@ -227,20 +230,22 @@ public class Player {
       return maxEval;
     }
     else {
+      //System.out.println("Finding min value. currentplayer: " + colour + " ai:" + game.getAIPlayer().getColour());
       int minEval = Integer.MAX_VALUE;
       for (Move child : getAllValidMoves()) {
         game.applyMove(child);
         int eval = opponent.minimax(depth-1, alpha, beta, true);
         game.unapplyMove();
-        // System.out.println();
-        // System.out.print("  " + child.getSAN() + " ");
-        // System.out.print(eval + " ");
+        //System.out.print("  " + child.getSAN() + " ");
+        //System.out.print(eval + " ");
         minEval = Math.min(minEval, eval);
         beta = Math.min(beta, eval);
-        if (beta < alpha) {
+        if (beta <= alpha) {
+          //System.out.print("beta " + beta + " < alpha " + alpha);
           break;
         }
       }
+      //System.out.println();
       return minEval;
     }
   }
