@@ -23,7 +23,19 @@ public class PawnRace {
       Move thisMove = null;
       // Computer's turn
       if (currentPlayer.isComputerPlayer()) {
-        currentPlayer.makeAIMove(2 + (deep/3));
+        //currentPlayer.makeAIMove(2 + (deep/3));
+        if (deep < 4) {
+          System.out.println("AI computing move d" + (deep + 1) + ":2 ...");
+          currentPlayer.makeAIMove(2);
+        }
+        else if (deep < 8) {
+          System.out.println("AI computing move d" + (deep + 1) + ":4 ...");
+          currentPlayer.makeAIMove(4);
+        }
+        else {
+          System.out.println("AI computing move d" + (deep + 1) + ":10 ...");
+          currentPlayer.makeAIMove(10);
+        }
         thisMove = game.getLastMove();
       }
       // Player's turn
@@ -37,7 +49,7 @@ public class PawnRace {
         } while (thisMove == null);
         game.applyMove(thisMove);
       }
-      System.out.println(currentPlayer.getColour().colourString() + " has played " + thisMove.getSAN() + ".");
+      System.out.println(currentPlayer.getColour().colourString() + " has played " + thisMove.getSAN() + ".\n");
       System.out.println(" ------------------------------- ");
       System.out.println();
       deep++;
@@ -52,10 +64,10 @@ public class PawnRace {
       System.out.println(" -  The result is a stalemate.  -");
       break;
       case WHITE:
-      System.out.println(" -  White (Player 1) has won the game.  -");
+      System.out.println(" -  White (Player 1) " + (p1.isComputerPlayer() ? "(AI)" : "") + " has won the game.  -");
       break;
       case BLACK:
-      System.out.println(" -  Black (Player 2) has won the game.  -");
+      System.out.println(" -  Black (Player 2) " + (p2.isComputerPlayer() ? "(AI)" : "") + " has won the game.  -");
       break;
     }
     System.out.println();
