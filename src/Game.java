@@ -3,7 +3,7 @@ public class Game {
   private Move[] moves;
   private int index;
   private Colour currentPlayer;
-  private Colour aiPlayer;
+  private Player aiPlayer;
 
   public Game(Board board) {
     this.board = board;
@@ -12,11 +12,11 @@ public class Game {
     currentPlayer = Colour.WHITE;
   }
 
-  public void setAIPlayer(Colour aiPlayer) {
+  public void setAIPlayer(Player aiPlayer) {
     this.aiPlayer = aiPlayer;
   }
 
-  public Colour getAIPlayer() {
+  public Player getAIPlayer() {
     return aiPlayer;
   }
 

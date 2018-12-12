@@ -19,6 +19,10 @@ public class Player {
     this.opponent = opponent;
   }
 
+  public Player getOpponent() {
+    return opponent;
+  }
+
   public Colour getColour() {
     return colour;
   }
@@ -110,6 +114,32 @@ public class Player {
     return Util.ShrinkMovesArray(allMoves, index);
   }
 
+  private Move[] orderValidMoves(Move[] moves) {
+    Move[] res1 = new Move[moves.length];
+    Move[] res2 = new Move[moves.length];
+    int index1 = 0;
+    int index2 = 0;
+    for (Move move : moves) {
+      if (move.isCapture()) {
+        res1[index1] = move;
+        index1++;
+      }
+      else if (isPassedPawn(move.getFrom())) {
+        res1[index1] = move;
+        index1++;
+      }
+      else {
+        res2[index2] = move;
+        index2++;
+      }
+    }
+    for (int i = 0; i < index2; i++) {
+      res1[index1] = res2[i];
+      index1++;
+    }
+    return res1;
+  }
+
   public boolean isPassedPawn(Square square) {
     int pawnX = square.getX();
     int pawnY = square.getY();
@@ -151,10 +181,13 @@ public class Player {
     Move moveToMake = null;
     int alpha = Integer.MIN_VALUE;
     int beta = Integer.MAX_VALUE;
-    for (Move child : getAllValidMoves()) {
+    for (Move child : orderValidMoves(getAllValidMoves())) {
       game.applyMove(child);
       int eval = opponent.minimax(depth-1, alpha, beta, false);
       game.unapplyMove();
+      // System.out.println();
+      // System.out.print(child.getSAN() + " ");
+      // System.out.print(eval + " ");
       if (eval >= maxEval) {
         maxEval = eval;
         moveToMake = child;
@@ -168,9 +201,17 @@ public class Player {
   }
 
   private int minimax(int depth, int alpha, int beta, boolean maximisingPlayer) {
-    if (depth == 0 || game.isFinished()) {
+    Colour gameState = game.getGameResult();
+    if (depth == 0) {
       return evalPosition();
     }
+    if (gameState == game.getAIPlayer().getColour()) {
+      return Integer.MAX_VALUE;
+    }
+    if (gameState == game.getAIPlayer().getOpponent().getColour()) {
+      return Integer.MIN_VALUE;
+    }
+    
     if (maximisingPlayer) {
       int maxEval = Integer.MIN_VALUE;
       for (Move child : getAllValidMoves()) {
@@ -191,9 +232,12 @@ public class Player {
         game.applyMove(child);
         int eval = opponent.minimax(depth-1, alpha, beta, true);
         game.unapplyMove();
+        // System.out.println();
+        // System.out.print("  " + child.getSAN() + " ");
+        // System.out.print(eval + " ");
         minEval = Math.min(minEval, eval);
         beta = Math.min(beta, eval);
-        if (beta <= alpha) {
+        if (beta < alpha) {
           break;
         }
       }
@@ -205,12 +249,19 @@ public class Player {
     int score = 0;
     for (int i = 0; i < 8; i++) {
       for (int j = 0; j < 8; j++) {
-        if (board.getSquare(i, j).occupiedBy() == game.getAIPlayer()) {
+        if (board.getSquare(i, j).occupiedBy() == game.getAIPlayer().getColour()) {
           score++;
+          if (game.getAIPlayer().isPassedPawn(board.getSquare(i, j))) {
+            score += 2;
+          }
         }
-        else if (board.getSquare(i, j).occupiedBy() == game.getAIPlayer().opponentColour()){
+        else if (board.getSquare(i, j).occupiedBy() == game.getAIPlayer().getColour().opponentColour()) {
           score--;
+          if (game.getAIPlayer().getOpponent().isPassedPawn(board.getSquare(i, j))) {
+            score -= 2;
+          }
         }
+        
       }
     }
     return score;
